@@ -172,20 +172,21 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 .modal-btns button:active{opacity:.8}
 
 /* SETTINGS */
-#settings-panel{position:fixed;inset:0;background:var(--bg);z-index:400;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease}
+#settings-panel{position:fixed;inset:0;background:var(--bg);z-index:400;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease;overflow:hidden}
 #settings-panel.open{transform:translateX(0)}
-.settings-header{background:var(--primary);color:var(--cream);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.settings-header{background:var(--primary);color:var(--cream);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;min-height:56px}
 .settings-header h2{font-family:var(--font-display);font-size:18px;font-weight:700;flex:1}
-.settings-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px}
-.settings-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.settings-body{flex:1;min-height:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:16px;padding-bottom:40px}
+.settings-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:visible}
 .settings-section-title{padding:10px 16px;background:var(--bg2);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}
-.settings-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px;cursor:pointer}
+.settings-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px;cursor:pointer;min-height:60px}
 .settings-row:last-child{border-bottom:none}
 .settings-row:active{background:var(--bg2)}
 .settings-row .row-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0}
-.settings-row .row-label{flex:1;font-size:15px;font-weight:700;color:var(--text)}
-.settings-row .row-sub{font-size:12px;color:var(--text3)}
-.settings-row .row-arrow{color:var(--text3);font-size:16px}
+.settings-row .row-info{flex:1;min-width:0}
+.settings-row .row-label{font-size:15px;font-weight:700;color:var(--text)}
+.settings-row .row-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.settings-row .row-arrow{color:var(--text3);font-size:16px;flex-shrink:0}
 
 /* THEME UI */
 .theme-presets-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 16px}
@@ -197,6 +198,13 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 .theme-custom-row label{flex:1;font-size:14px;color:var(--text2)}
 .theme-custom-row input[type=color]{width:38px;height:30px;border-radius:6px;border:1px solid var(--border2);padding:2px;cursor:pointer;background:var(--surface)}
 .theme-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border)}
+
+/* SETLIST NAV in presenter */
+.setlist-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0;gap:8px}
+.setlist-nav-btn{background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:22px;width:44px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.setlist-nav-btn:active{background:var(--bg3)}
+.setlist-nav-btn:disabled{opacity:.3;cursor:default}
+.setlist-nav-info{flex:1;text-align:center;font-size:13px;color:var(--text3);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--primary);color:var(--cream);padding:11px 20px;border-radius:24px;font-size:14px;font-weight:700;z-index:700;transition:transform .3s ease;white-space:nowrap}
@@ -301,6 +309,11 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
   <div class="presenter-content">
     <div id="song-rendered" class="song-rendered"></div>
   </div>
+  <div class="setlist-nav" id="setlist-nav" style="display:none">
+    <button class="setlist-nav-btn" id="btn-prev-song">◀</button>
+    <div class="setlist-nav-info" id="setlist-nav-info">1 / 1</div>
+    <button class="setlist-nav-btn" id="btn-next-song">▶</button>
+  </div>
 </div>
 
 <!-- EDITOR -->
@@ -365,13 +378,40 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
       <div class="settings-section-title">Sauvegarde &amp; Restauration</div>
       <div class="settings-row" id="sett-export">
         <span class="row-icon">📦</span>
-        <div><div class="row-label">Exporter sauvegarde</div><div class="row-sub">Toutes vos chansons + setlists → .json</div></div>
+        <div class="row-info"><div class="row-label">Exporter sauvegarde</div><div class="row-sub">Toutes vos chansons + setlists → .json</div></div>
         <span class="row-arrow">›</span>
       </div>
       <div class="settings-row" id="sett-import">
         <span class="row-icon">📥</span>
-        <div><div class="row-label">Importer sauvegarde</div><div class="row-sub">Restaurer depuis un fichier .json</div></div>
+        <div class="row-info"><div class="row-label">Importer sauvegarde</div><div class="row-sub">Restaurer depuis un fichier .json</div></div>
         <span class="row-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Rechercher des paroles en ligne</div>
+      <div class="settings-row" id="sett-genius">
+        <span class="row-icon">🎤</span>
+        <div class="row-info"><div class="row-label">Genius</div><div class="row-sub">Ouvre Genius dans le navigateur</div></div>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="settings-row" id="sett-musixmatch">
+        <span class="row-icon">🎵</span>
+        <div class="row-info"><div class="row-label">Musixmatch</div><div class="row-sub">Ouvre Musixmatch dans le navigateur</div></div>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="settings-row" id="sett-ug">
+        <span class="row-icon">🎸</span>
+        <div class="row-info"><div class="row-label">Ultimate Guitar</div><div class="row-sub">Tablatures et accords</div></div>
+        <span class="row-arrow">›</span>
+      </div>
+      <div class="settings-row" id="sett-boite">
+        <span class="row-icon">🎼</span>
+        <div class="row-info"><div class="row-label">La Boîte à Chansons</div><div class="row-sub">Paroles en français</div></div>
+        <span class="row-arrow">›</span>
+      </div>
+      <div style="padding:10px 16px 14px;font-size:12px;color:var(--text3);line-height:1.5">
+        💡 Copiez les paroles trouvées, puis revenez dans l'app et utilisez <strong>＋ → Coller texte</strong> pour les importer.
       </div>
     </div>
 
@@ -391,7 +431,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
       <div class="settings-section-title">À propos</div>
       <div class="settings-row" style="cursor:default">
         <span class="row-icon">🎸</span>
-        <div><div class="row-label">JAY's Songbook v2</div><div class="row-sub">PWA hors ligne · OpenChord · OCR</div></div>
+        <div class="row-info"><div class="row-label">JAY's Songbook v2</div><div class="row-sub">PWA hors ligne · OpenChord · Images</div></div>
       </div>
     </div>
 
@@ -552,7 +592,7 @@ function renderSetlist(){
       <div class="song-avatar">${av}</div>
       <div class="song-info"><div class="song-title">${esc(song.title)}</div><div class="song-artist">${esc(song.artist||'—')}</div></div>
       <div class="song-menu-btn" data-sid="${sid}">⋮</div>`;
-    item.querySelector('.song-info').addEventListener('click',()=>openPresenter(sid));
+    item.querySelector('.song-info').addEventListener('click',()=>openPresenter(sid, true));
     item.querySelector('.song-menu-btn').addEventListener('click',e=>{e.stopPropagation();showCtxMenu(e,sid,true,idx)});
     item.addEventListener('dragstart',e=>{dragSrc=idx;item.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
     item.addEventListener('dragend',()=>{item.classList.remove('dragging');document.querySelectorAll('.drag-target').forEach(el=>el.classList.remove('drag-target'))});
@@ -569,16 +609,71 @@ function renderSetlist(){
 }
 
 // ── PRESENTER ──
-function openPresenter(id){
-  currentSongId=id;transposeVal=0;
-  const song=songs.find(s=>s.id===id);if(!song)return;
+// Track whether the presenter was opened from a setlist (for nav buttons)
+let presenterSetlistIds = []; // ordered song ids currently in setlist
+let presenterSetlistIdx = -1; // current position in that list
+
+function openPresenter(id, fromSetlist=false){
+  currentSongId=id; transposeVal=0;
+  const song=songs.find(s=>s.id===id); if(!song)return;
+
+  // Build setlist nav context
+  const sl=setlists.find(s=>s.id===activeSetlistId);
+  if(fromSetlist && sl && sl.songIds.includes(id)){
+    presenterSetlistIds=sl.songIds.filter(sid=>songs.find(s=>s.id===sid));
+    presenterSetlistIdx=presenterSetlistIds.indexOf(id);
+  } else {
+    presenterSetlistIds=[]; presenterSetlistIdx=-1;
+  }
+  updateSetlistNav();
+
   document.getElementById('presenter-song-title').textContent=song.title;
   document.getElementById('presenter-song-artist').textContent=song.artist||'';
   document.getElementById('transpose-display').textContent='0';
   document.getElementById('song-rendered').style.fontSize=fontSize+'px';
+  // scroll content back to top
+  document.querySelector('.presenter-content').scrollTop=0;
   renderSong(song.content||'',0);
   document.getElementById('presenter').classList.add('open');
 }
+
+function updateSetlistNav(){
+  const nav=document.getElementById('setlist-nav');
+  if(!presenterSetlistIds.length){nav.style.display='none';return;}
+  nav.style.display='flex';
+  const total=presenterSetlistIds.length;
+  const idx=presenterSetlistIdx;
+  document.getElementById('setlist-nav-info').textContent=`${idx+1} / ${total}`;
+  document.getElementById('btn-prev-song').disabled=(idx<=0);
+  document.getElementById('btn-next-song').disabled=(idx>=total-1);
+}
+
+document.getElementById('btn-prev-song').addEventListener('click',()=>{
+  if(presenterSetlistIdx<=0)return;
+  presenterSetlistIdx--;
+  const id=presenterSetlistIds[presenterSetlistIdx];
+  currentSongId=id; transposeVal=0;
+  const song=songs.find(s=>s.id===id); if(!song)return;
+  document.getElementById('presenter-song-title').textContent=song.title;
+  document.getElementById('presenter-song-artist').textContent=song.artist||'';
+  document.getElementById('transpose-display').textContent='0';
+  document.querySelector('.presenter-content').scrollTop=0;
+  renderSong(song.content||'',0);
+  updateSetlistNav();
+});
+document.getElementById('btn-next-song').addEventListener('click',()=>{
+  if(presenterSetlistIdx>=presenterSetlistIds.length-1)return;
+  presenterSetlistIdx++;
+  const id=presenterSetlistIds[presenterSetlistIdx];
+  currentSongId=id; transposeVal=0;
+  const song=songs.find(s=>s.id===id); if(!song)return;
+  document.getElementById('presenter-song-title').textContent=song.title;
+  document.getElementById('presenter-song-artist').textContent=song.artist||'';
+  document.getElementById('transpose-display').textContent='0';
+  document.querySelector('.presenter-content').scrollTop=0;
+  renderSong(song.content||'',0);
+  updateSetlistNav();
+});
 
 function renderSong(content,semitones){
   if(!content){document.getElementById('song-rendered').innerHTML='';return}
@@ -926,6 +1021,29 @@ document.getElementById('backup-input').addEventListener('change',async e=>{
   }catch(err){toast('❌ Fichier invalide')}
   e.target.value='';
 });
+
+// Web search sites
+function openWebSearch(baseUrl, prompt){
+  showModal(`<h3>🔍 Rechercher des paroles</h3>
+    <p>Entrez le titre et/ou l'artiste à rechercher sur <strong>${prompt}</strong> :</p>
+    <input id="ws-query" type="text" placeholder="ex: Hallelujah Leonard Cohen">
+    <p style="font-size:12px;color:var(--text3);margin-top:-4px">💡 Copiez les paroles trouvées, revenez ici et utilisez <strong>＋ → Coller texte</strong>.</p>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Annuler</button>
+      <button class="primary" onclick="doWebSearch('${baseUrl}')">Ouvrir →</button>
+    </div>`);
+  setTimeout(()=>document.getElementById('ws-query')?.focus(),100);
+}
+window.doWebSearch=function(base){
+  const q=encodeURIComponent(document.getElementById('ws-query').value.trim());
+  if(!q)return;
+  window.open(base+q,'_blank');
+  closeModal();
+};
+document.getElementById('sett-genius').addEventListener('click',()=>openWebSearch('https://genius.com/search?q=','Genius'));
+document.getElementById('sett-musixmatch').addEventListener('click',()=>openWebSearch('https://www.musixmatch.com/search/','Musixmatch'));
+document.getElementById('sett-ug').addEventListener('click',()=>openWebSearch('https://www.ultimate-guitar.com/search.php?search_type=title&value=','Ultimate Guitar'));
+document.getElementById('sett-boite').addEventListener('click',()=>openWebSearch('https://www.boiteachansons.net/Recherche.php?rech=','La Boîte à Chansons'));
 
 // ── NAV ──
 document.querySelectorAll('.nav-tab').forEach(tab=>{
