@@ -214,7 +214,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
-#file-input,#image-input,#backup-input{display:none}
+#file-input,#image-input,#camera-input,#backup-input{display:none}
 </style>
 </head>
 <body>
@@ -467,6 +467,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 <!-- HIDDEN INPUTS -->
 <input type="file" id="file-input" accept=".txt,.html,.htm,.pdf" multiple>
 <input type="file" id="image-input" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif" multiple>
+<input type="file" id="camera-input" accept="image/*" capture="environment">
 <input type="file" id="backup-input" accept=".json">
 
 <script>
@@ -920,16 +921,23 @@ document.getElementById('file-input').addEventListener('change',async e=>{
 });
 
 // Image import — stored as base64, displayed directly in presenter
-document.getElementById('btn-image-import').addEventListener('click',()=>document.getElementById('image-input').click());
-document.getElementById('image-input').addEventListener('change',async e=>{
-  const files=Array.from(e.target.files);
+document.getElementById('btn-image-import').addEventListener('click',()=>{
   document.getElementById('import-panel').classList.remove('open');
+  showModal(`<h3>🖼️ Ajouter une image</h3>
+    <p>Choisissez la source :</p>
+    <div class="modal-btns" style="flex-direction:column;gap:8px">
+      <button class="primary" style="width:100%;padding:12px;font-size:15px" onclick="closeModal();document.getElementById('camera-input').click()">📷 Prendre une photo</button>
+      <button class="primary" style="width:100%;padding:12px;font-size:15px;background:var(--primary2);border-color:var(--primary2)" onclick="closeModal();document.getElementById('image-input').click()">🖼️ Choisir depuis la galerie</button>
+      <button style="width:100%" onclick="closeModal()">Annuler</button>
+    </div>`);
+});
+
+async function handleImageFiles(files){
   for(const file of files){
-    const title=file.name.replace(/\.[^.]+$/,'');
+    const title=file.name.replace(/\.[^.]+$/,'')||'Photo '+new Date().toLocaleDateString('fr');
     try{
       const base64=await fileToBase64(file);
       const thumb=await fileToThumb(file,80);
-      // Content is just an image tag — displayed full-width in presenter
       const content=`[IMG:${base64}]`;
       songs.push({id:uid(),title,artist:'',content,thumbnail:thumb});
       save();renderLibrary();
@@ -938,6 +946,35 @@ document.getElementById('image-input').addEventListener('change',async e=>{
       toast('❌ Erreur import image');console.error(err);
     }
   }
+  e.target.value='';
+}
+
+document.getElementById('image-input').addEventListener('change',async e=>{
+  const files=Array.from(e.target.files);
+  document.getElementById('import-panel').classList.remove('open');
+  for(const file of files){
+    const title=file.name.replace(/\.[^.]+$/,'')||'Image '+new Date().toLocaleDateString('fr');
+    try{
+      const base64=await fileToBase64(file);
+      const thumb=await fileToThumb(file,80);
+      songs.push({id:uid(),title,artist:'',content:`[IMG:${base64}]`,thumbnail:thumb});
+      save();renderLibrary();
+      toast('✅ Image ajoutée : '+title);
+    }catch(err){toast('❌ Erreur import image');console.error(err);}
+  }
+  e.target.value='';
+});
+
+document.getElementById('camera-input').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file)return;
+  const title='Photo '+new Date().toLocaleDateString('fr')+' '+new Date().toLocaleTimeString('fr',{hour:'2-digit',minute:'2-digit'});
+  try{
+    const base64=await fileToBase64(file);
+    const thumb=await fileToThumb(file,80);
+    songs.push({id:uid(),title,artist:'',content:`[IMG:${base64}]`,thumbnail:thumb});
+    save();renderLibrary();
+    toast('✅ Photo ajoutée : '+title);
+  }catch(err){toast('❌ Erreur photo');console.error(err);}
   e.target.value='';
 });
 
