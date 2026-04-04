@@ -428,6 +428,15 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title">Aide</div>
+      <div class="settings-row" id="sett-help">
+        <span class="row-icon">📖</span>
+        <div class="row-info"><div class="row-label">Guide d'utilisation</div><div class="row-sub">Pas à pas illustré — toutes les fonctions</div></div>
+        <span class="row-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div class="settings-section-title">À propos</div>
       <div class="settings-row" style="cursor:default">
         <span class="row-icon">🎸</span>
@@ -808,6 +817,66 @@ document.getElementById('btn-save-song').addEventListener('click',()=>{
   toast('💾 Chanson sauvegardée');
 });
 
+// ── CHORD FORMAT CONVERTER ──
+const _CHORD_RE=/([A-G][#b]?(?:m(?:aj)?|dim|aug|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?)/g;
+
+function _isChordLine(line){
+  if(!line.trim())return false;
+  const cleaned=line.replace(_CHORD_RE,'').replace(/[\s\-|\/\\]+/g,'');
+  const hasChords=(line.match(_CHORD_RE)||[]).length>0;
+  return hasChords&&cleaned.length===0;
+}
+
+function _detectChordFormat(text){
+  if(/\[[A-G][#b]?[^\]]{0,8}\]/.test(text))return'chordpro';
+  if(/\([A-G][#b]?[^\)]{0,8}\)/.test(text))return'parentheses';
+  const lines=text.split('\n');
+  const chordLines=lines.filter(l=>_isChordLine(l)).length;
+  if(chordLines>=1)return'chord-lines';
+  return null;
+}
+
+function _mergeChordLineWithLyrics(chordLine,lyricLine){
+  const re=/([A-G][#b]?(?:m(?:aj)?|dim|aug|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?)/g;
+  let m,insertions=[];
+  while((m=re.exec(chordLine))!==null)insertions.push({pos:m.index,chord:m[0]});
+  let lyrics=lyricLine;
+  for(let k=insertions.length-1;k>=0;k--){
+    const{pos,chord}=insertions[k];
+    while(lyrics.length<pos)lyrics+=' ';
+    lyrics=lyrics.slice(0,pos)+`[${chord}]`+lyrics.slice(pos);
+  }
+  return lyrics;
+}
+
+function _convertChordLines(text){
+  const lines=text.split('\n');
+  const result=[];let i=0;
+  while(i<lines.length){
+    const line=lines[i];
+    if(_isChordLine(line.trim())){
+      const next=lines[i+1]!==undefined?lines[i+1]:'';
+      if(!_isChordLine(next.trim())&&next.trim().length>0){
+        result.push(_mergeChordLineWithLyrics(line,next));i+=2;
+      }else{
+        result.push(line.replace(/([A-G][#b]?(?:m(?:aj)?|dim|aug|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?)/g,'[$1]'));i++;
+      }
+    }else{result.push(line);i++;}
+  }
+  return result.join('\n');
+}
+
+function convertToChordPro(text){
+  const fmt=_detectChordFormat(text);
+  if(!fmt||fmt==='chordpro')return{content:text,format:fmt};
+  let converted=text;
+  if(fmt==='parentheses')converted=text.replace(/\(([A-G][#b]?(?:m(?:aj)?|dim|aug|sus|add)?(?:\d+)?(?:\/[A-G][#b]?)?)\)/g,'[$1]');
+  else if(fmt==='chord-lines')converted=_convertChordLines(text);
+  return{content:converted,format:fmt};
+}
+
+const FORMAT_LABELS={'chordpro':'déjà ChordPro ✓','parentheses':'parenthèses → [accords]','chord-lines':'lignes séparées → inline'};
+
 // ── IMPORT ──
 document.getElementById('btn-import-toggle').addEventListener('click',()=>{
   document.getElementById('import-panel').classList.toggle('open');
@@ -819,15 +888,17 @@ document.getElementById('btn-paste').addEventListener('click',()=>{document.getE
 document.getElementById('btn-paste-cancel').addEventListener('click',()=>document.getElementById('paste-area').style.display='none');
 document.getElementById('btn-paste-import').addEventListener('click',()=>{
   const title=document.getElementById('paste-title').value.trim()||'Chanson sans titre';
-  const content=document.getElementById('paste-input').value;
-  if(!content.trim()){toast('Contenu vide');return}
+  const raw=document.getElementById('paste-input').value;
+  if(!raw.trim()){toast('Contenu vide');return}
+  const{content,format}=convertToChordPro(raw);
   songs.push({id:uid(),title,artist:'',content});
   save();renderLibrary();
   document.getElementById('paste-area').style.display='none';
   document.getElementById('import-panel').classList.remove('open');
   document.getElementById('paste-title').value='';
   document.getElementById('paste-input').value='';
-  toast('✅ Importé : '+title);
+  const label=format?FORMAT_LABELS[format]:'aucun accord détecté';
+  toast('✅ Importé : '+title+(format&&format!=='chordpro'?' · '+label:''));
 });
 
 // File import
@@ -836,11 +907,13 @@ document.getElementById('file-input').addEventListener('change',async e=>{
   for(const file of files){
     const ext=file.name.split('.').pop().toLowerCase();
     const title=file.name.replace(/\.[^.]+$/,'');
-    let content='';
-    if(ext==='pdf')content=await extractPdfText(file);
-    else{content=await file.text();if(ext==='html'||ext==='htm'){const d=document.createElement('div');d.innerHTML=content;content=d.innerText}}
+    let raw='';
+    if(ext==='pdf')raw=await extractPdfText(file);
+    else{raw=await file.text();if(ext==='html'||ext==='htm'){const d=document.createElement('div');d.innerHTML=raw;raw=d.innerText}}
+    const{content,format}=convertToChordPro(raw);
     songs.push({id:uid(),title,artist:'',content});
-    toast('✅ '+title+' importé');
+    const label=format&&format!=='chordpro'?' · '+FORMAT_LABELS[format]:'';
+    toast('✅ '+title+' importé'+label);
   }
   save();renderLibrary();e.target.value='';
   document.getElementById('import-panel').classList.remove('open');
@@ -1020,6 +1093,10 @@ document.getElementById('backup-input').addEventListener('change',async e=>{
     toast('✅ Restauré — '+songs.length+' chanson(s)');
   }catch(err){toast('❌ Fichier invalide')}
   e.target.value='';
+});
+
+document.getElementById('sett-help').addEventListener('click',()=>{
+  window.open('aide.html','_blank');
 });
 
 // Web search sites
