@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JAY's Songbook — Guide d'utilisation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Code+Pro:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FDF6EC;--bg2:#F5ECD8;--bg3:#EDE0C8;--surface:#FFFDF8;--primary:#2C1810;--primary2:#5C3D2E;--accent:#C8860A;--accent2:#E8A020;--cream:#F0E4CC;--text:#1E0E06;--text2:#5C3D2E;--text3:#8B6352;--chord:#8B2500;--chord-bg:#FFF0E8;--red:#A32020;--border:rgba(92,61,46,0.2);--border2:rgba(92,61,46,0.4)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+.top-nav{position:sticky;top:0;z-index:100;background:var(--primary);color:var(--cream);padding:0 20px;height:56px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.top-nav h1{font-family:'Playfair Display',serif;font-size:19px;flex:1}
+.nav-links{display:flex;gap:4px;flex-wrap:wrap}
+.nav-link{background:rgba(255,255,255,.1);border:none;border-radius:6px;color:var(--cream);font-size:11px;font-weight:700;padding:5px 9px;cursor:pointer;white-space:nowrap;transition:background .15s}
+.nav-link:hover{background:rgba(255,255,255,.22)}
+
+.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary2) 100%);color:var(--cream);padding:48px 24px 40px;text-align:center}
+.hero h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:12px}
+.hero p{font-size:15px;opacity:.8;max-width:480px;margin:0 auto 24px}
+.hero-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.chip{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.chip:hover{background:rgba(255,255,255,.28)}
+
+.content{max-width:760px;margin:0 auto;padding:32px 20px 60px}
+
+.section{margin-bottom:52px;scroll-margin-top:70px}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid var(--accent)}
+.section-num{background:var(--accent);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.section-icon{font-size:26px}
+.section-title{font-family:'Playfair Display',serif;font-size:1.45rem;color:var(--primary)}
+
+.steps{display:flex;flex-direction:column;gap:18px;margin:16px 0}
+.step{display:flex;gap:14px;align-items:flex-start}
+.step-num{background:var(--primary);color:var(--cream);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px}
+.step-body{flex:1}
+.step-title{font-weight:700;font-size:15px;color:var(--primary);margin-bottom:3px}
+.step-desc{font-size:14px;color:var(--text2);line-height:1.6}
+.tip{background:var(--chord-bg);border-left:3px solid var(--chord);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--primary2)}
+.tip strong{color:var(--chord)}
+.warn{background:#fff8e1;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-size:13px;color:#5a3e00}
+
+.highlight{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin:16px 0;font-size:14px;color:var(--text2)}
+.highlight strong{color:var(--primary)}
+
+code{background:var(--chord-bg);color:var(--chord);font-family:'Source Code Pro',monospace;font-size:13px;padding:1px 6px;border-radius:4px}
+
+/* ── MAQUETTES PHONE ── */
+.mockup-wrap{margin:22px 0;display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+.phone{width:240px;border-radius:30px;border:3px solid #1a1a1a;background:#111;padding:9px;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.phone-label{text-align:center;font-size:11px;color:var(--text3);margin-top:8px;font-style:italic}
+.phone-screen{border-radius:21px;overflow:hidden;background:var(--bg)}
+
+.ph-header{background:var(--primary);color:var(--cream);padding:10px 12px;display:flex;align-items:center;gap:8px}
+.ph-h1{font-family:'Playfair Display',serif;font-size:12px;flex:1}
+.ph-btn{background:rgba(255,255,255,.15);border-radius:5px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ph-nav{background:var(--primary2);display:flex}
+.ph-tab{flex:1;padding:6px 4px;text-align:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(240,228,204,.5)}
+.ph-tab.active{color:#E8A020;border-bottom:2px solid #E8A020}
+.ph-search{padding:7px 8px;background:var(--bg2);display:flex;gap:5px;align-items:center;border-bottom:1px solid var(--border)}
+.ph-search-in{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:5px 7px;font-size:10px;color:var(--text3)}
+.ph-add{background:var(--accent);border-radius:5px;color:#fff;width:27px;height:27px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+.ph-import-panel{background:var(--bg2);padding:9px}
+.ph-import-title{font-family:'Playfair Display',serif;font-size:10.5px;color:var(--primary);margin-bottom:7px}
+.ph-import-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.ph-import-btn{background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:8.5px;font-weight:700;color:var(--text)}
+.ph-ico{font-size:15px}
+.ph-span2{grid-column:span 2}
+.ph-song{display:flex;align-items:center;padding:7px 9px;border-bottom:1px solid var(--border);background:var(--surface);gap:7px}
+.ph-avatar{width:28px;height:28px;border-radius:5px;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:12px;font-weight:700;color:var(--primary2);flex-shrink:0}
+.ph-song-info{flex:1}
+.ph-song-t{font-size:11px;font-weight:700;color:var(--text)}
+.ph-song-a{font-size:9px;color:var(--text3)}
+.ph-dots{color:var(--text3);font-size:14px}
+.ph-presenter-h{background:var(--primary);color:var(--cream);padding:7px 9px;display:flex;align-items:center;gap:6px}
+.ph-pres-title{flex:1;font-family:'Playfair Display',serif;font-size:10px}
+.ph-toolbar{background:var(--bg2);padding:5px 7px;display:flex;gap:4px;align-items:center;border-bottom:1px solid var(--border)}
+.ph-tool{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;font-size:8.5px;font-weight:700;color:var(--text2)}
+.ph-tool.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ph-transpose{display:flex;align-items:center;border:1px solid var(--border2);border-radius:4px;overflow:hidden}
+.ph-tb{background:var(--surface);padding:3px 5px;font-size:9px;font-weight:700;color:var(--text2)}
+.ph-tv{background:var(--bg2);padding:3px 4px;font-size:8.5px;font-weight:700;border-left:1px solid var(--border2);border-right:1px solid var(--border2)}
+.ph-content{padding:9px 10px;font-family:'Source Code Pro',monospace;font-size:9.5px;line-height:1.85;color:var(--text)}
+.ph-chord{color:var(--chord);font-weight:600;background:var(--chord-bg);border-radius:2px;padding:0 2px;font-size:.82em;vertical-align:super;line-height:0}
+.ph-section-lbl{color:var(--accent);font-weight:700;font-size:8.5px;text-transform:uppercase;letter-spacing:.07em;display:block;margin-top:6px;margin-bottom:1px}
+.ph-sett-section{background:var(--bg2);font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:5px 9px;border-bottom:1px solid var(--border)}
+.ph-sett-row{display:flex;align-items:center;padding:7px 9px;border-bottom:1px solid var(--border);gap:7px;background:var(--surface)}
+.ph-row-icon{font-size:13px;width:18px;text-align:center}
+.ph-row-info{flex:1}
+.ph-row-label{font-size:10px;font-weight:700;color:var(--text)}
+.ph-row-sub{font-size:8px;color:var(--text3)}
+.ph-row-arrow{color:var(--text3);font-size:11px}
+.ph-editor-meta{display:flex;gap:5px;padding:5px 7px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.ph-meta-in{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:4px 6px;font-size:9.5px;color:var(--text)}
+.ph-palette{padding:4px 7px;background:var(--bg2);display:flex;gap:3px;overflow:hidden;border-bottom:1px solid var(--border)}
+.ph-ctag{background:var(--chord-bg);border:1px solid rgba(139,37,0,.3);border-radius:3px;padding:2px 5px;font-size:8.5px;font-weight:600;color:var(--chord)}
+.ph-stag{background:rgba(200,134,10,.12);border:1px solid rgba(200,134,10,.4);border-radius:3px;padding:2px 5px;font-size:8.5px;font-weight:600;color:var(--accent)}
+.ph-editor-area{padding:7px 9px;font-family:'Source Code Pro',monospace;font-size:9px;line-height:1.85;color:var(--text);background:var(--surface);min-height:70px}
+.ph-sl-header{background:var(--bg2);padding:5px 7px;display:flex;gap:4px;align-items:center;border-bottom:1px solid var(--border)}
+.ph-sl-select{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:4px 6px;font-size:9px;color:var(--text)}
+.ph-sl-btn{background:var(--primary);border-radius:4px;color:var(--cream);font-size:8.5px;font-weight:700;padding:4px 7px}
+.ph-sl-item{display:flex;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border);background:var(--surface);gap:5px}
+.ph-handle{color:var(--text3);font-size:12px}
+.ph-sl-num{font-size:9px;font-weight:700;color:var(--text3);width:14px;text-align:center}
+.ph-modal-wrap{background:rgba(44,24,16,.5);padding:12px}
+.ph-modal{background:var(--surface);border-radius:10px;padding:12px}
+.ph-modal-title{font-family:'Playfair Display',serif;font-size:12px;color:var(--primary);margin-bottom:7px}
+.ph-modal-desc{font-size:9.5px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+.ph-modal-input{width:100%;background:var(--bg2);border:1px solid var(--accent);border-radius:5px;padding:6px 8px;font-size:10px;text-align:center;color:var(--text);margin-bottom:8px}
+.ph-modal-btns{display:flex;justify-content:flex-end}
+.ph-modal-btn{background:var(--primary);color:var(--cream);border:none;border-radius:5px;padding:5px 12px;font-size:10px;font-weight:700}
+.ph-ctx{background:var(--surface);border:1px solid var(--border2);border-radius:9px;overflow:hidden;margin:8px}
+.ph-ctx-item{display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:10px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border)}
+.ph-ctx-item:last-child{border-bottom:none;color:var(--red)}
+.ph-ctx-icon{font-size:12px;width:16px;text-align:center}
+
+/* TABLE */
+.table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+.table th{background:var(--primary);color:var(--cream);padding:8px 12px;text-align:left;font-weight:700}
+.table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.table tr:nth-child(even) td{background:var(--bg2)}
+
+footer{background:var(--primary);color:var(--cream);text-align:center;padding:24px;font-size:13px;opacity:.85}
+
+@media(max-width:520px){.top-nav h1{font-size:14px}.nav-links{display:none}.hero h2{font-size:1.4rem}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <h1>🎸 JAY's Songbook — Guide</h1>
+  <div class="nav-links">
+    <button class="nav-link" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})">① Démarrer</button>
+    <button class="nav-link" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})">② Importer</button>
+    <button class="nav-link" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})">③ Lire</button>
+    <button class="nav-link" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})">④ Éditer</button>
+    <button class="nav-link" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})">⑤ Setlist</button>
+    <button class="nav-link" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})">⑥ Paramètres</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h2>Guide d'utilisation</h2>
+  <p>Tout ce qu'il faut savoir pour gérer vos chansons, accords et setlists — pas à pas, avec illustrations.</p>
+  <div class="hero-chips">
+    <span class="chip" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})">① Premier démarrage</span>
+    <span class="chip" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})">② Importer des chansons</span>
+    <span class="chip" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})">③ Lire &amp; transposer</span>
+    <span class="chip" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})">④ Créer &amp; éditer</span>
+    <span class="chip" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})">⑤ Setlists</span>
+    <span class="chip" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})">⑥ Paramètres</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════ S1 ══════════════════ -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-icon">👋</div>
+    <div class="section-title">Premier démarrage</div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Saisir votre prénom ou pseudo</div>
+        <div class="step-desc">Au tout premier lancement, une fenêtre vous accueille. Tapez votre prénom (ou pseudo) et appuyez sur <strong>Valider</strong>. Ce nom personnalise le titre de l'app.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header"><div class="ph-h1">🎸 JAY's Songbook</div><div class="ph-btn">⚙️</div></div>
+          <div class="ph-modal-wrap">
+            <div class="ph-modal">
+              <div style="text-align:center;font-size:26px;margin-bottom:6px">👋</div>
+              <div class="ph-modal-title" style="text-align:center">Bienvenue !</div>
+              <div class="ph-modal-desc" style="text-align:center">Comment souhaitez-vous appeler votre Songbook ?</div>
+              <input class="ph-modal-input" value="Bernard" readonly>
+              <div class="ph-modal-btns"><div class="ph-modal-btn">Valider</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Saisissez votre prénom → Valider</div>
+    </div>
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
+          <div class="ph-nav"><div class="ph-tab active">📚 Bibliothèque</div><div class="ph-tab">🎵 Setlist</div></div>
+          <div style="padding:20px 12px;text-align:center;color:var(--text3);font-size:10px">
+            <div style="font-size:34px;opacity:.3;margin-bottom:7px">🎵</div>
+            Bibliothèque vide.<br>Importez vos premières chansons !
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Le titre se met à jour instantanément</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Changer de nom plus tard</div>
+        <div class="step-desc">Allez dans <strong>Paramètres ⚙️</strong> → <em>Mon profil</em> → <em>Nom affiché</em>. Vous pouvez modifier ou effacer votre nom à tout moment.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ S2 ══════════════════ -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-icon">📥</div>
+    <div class="section-title">Importer des chansons</div>
+  </div>
+
+  <div class="highlight">
+    Il existe <strong>4 façons d'importer</strong> une chanson. Toutes s'ouvrent via le bouton <strong style="color:var(--accent);font-size:16px">＋</strong> en haut à droite de la bibliothèque.
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Appuyer sur le bouton ＋</div>
+        <div class="step-desc">Le panneau d'import s'ouvre sous la barre de recherche avec toutes les options disponibles.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
+          <div class="ph-nav"><div class="ph-tab active">📚 Bibliothèque</div><div class="ph-tab">🎵 Setlist</div></div>
+          <div class="ph-search">
+            <div class="ph-search-in">Rechercher…</div>
+            <div class="ph-add" style="box-shadow:0 0 0 3px var(--accent2),0 0 0 6px rgba(200,134,10,.25)">＋</div>
+          </div>
+          <div class="ph-import-panel">
+            <div class="ph-import-title">Importer des chansons</div>
+            <div class="ph-import-grid">
+              <div class="ph-import-btn"><div class="ph-ico">📁</div>Fichier<span style="font-size:7.5px;font-weight:400">TXT · PDF · HTML</span></div>
+              <div class="ph-import-btn"><div class="ph-ico">🖼️</div>Image<span style="font-size:7.5px;font-weight:400">JPG · PNG…</span></div>
+              <div class="ph-import-btn"><div class="ph-ico">☁️</div>Google Drive</div>
+              <div class="ph-import-btn"><div class="ph-ico">📋</div>Coller texte</div>
+              <div class="ph-import-btn ph-span2"><div class="ph-ico">✏️</div>Nouvelle chanson vide</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Le panneau d'import</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Option A — Importer un fichier TXT ou PDF</div>
+        <div class="step-desc">Appuyez sur <strong>📁 Fichier</strong>. Choisissez un ou plusieurs fichiers depuis votre appareil. L'app importe et <strong>convertit automatiquement les accords</strong> au bon format.</div>
+        <div class="tip">💡 <strong>Conversion automatique :</strong> si vos accords sont écrits sur des lignes séparées au-dessus des paroles (format courant sur les sites de tablatures), l'app les reconnaît et les intègre directement dans les paroles.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Option B — Coller du texte copié depuis un site</div>
+        <div class="step-desc">Appuyez sur <strong>📋 Coller texte</strong>. Saisissez le titre, collez vos paroles/accords dans le champ, puis appuyez sur <strong>Importer</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
+          <div style="background:var(--bg2);border:1px dashed var(--border2);border-radius:8px;margin:9px;padding:10px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--text2);margin-bottom:7px">Coller le contenu :</div>
+            <div style="background:var(--surface);border:1px solid var(--accent);border-radius:5px;padding:5px 7px;font-size:9px;color:var(--text3);margin-bottom:5px">Hier encore</div>
+            <div style="background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:5px 7px;font-family:'Source Code Pro',monospace;font-size:8.5px;color:var(--text);min-height:46px;line-height:1.75">Am G F C<br>Hier encore j'avais vingt ans<br>Am G<br>Je caressais le temps…</div>
+            <div style="display:flex;gap:5px;margin-top:7px">
+              <button style="background:var(--primary);color:var(--cream);border:none;border-radius:5px;padding:5px 10px;font-size:10px;font-weight:700">Importer</button>
+              <button style="background:var(--bg3);color:var(--text);border:none;border-radius:5px;padding:5px 10px;font-size:10px;font-weight:700">Annuler</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Panneau "Coller texte"</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Option C — Rechercher en ligne puis coller</div>
+        <div class="step-desc">Dans <strong>Paramètres ⚙️</strong> → <em>Rechercher des paroles en ligne</em>, choisissez un site (Genius, Ultimate Guitar, La Boîte à Chansons…). Trouvez la chanson, copiez le texte, revenez dans l'app → <strong>📋 Coller texte</strong>.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Option D — Créer une chanson vide</div>
+        <div class="step-desc">Appuyez sur <strong>✏️ Nouvelle chanson vide</strong> pour ouvrir l'éditeur directement et tout saisir à la main.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ S3 ══════════════════ -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div class="section-icon">🎸</div>
+    <div class="section-title">Lire une chanson &amp; transposer</div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Ouvrir une chanson</div>
+        <div class="step-desc">Dans la bibliothèque, appuyez sur le <strong>titre</strong> d'une chanson. Elle s'ouvre en plein écran en mode lecture.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-presenter-h">
+            <div class="ph-btn" style="font-size:10px">✕</div>
+            <div class="ph-pres-title">Hier encore — Charles Aznavour</div>
+            <div class="ph-btn" style="font-size:10px">✏️</div>
+          </div>
+          <div class="ph-toolbar">
+            <div class="ph-transpose"><div class="ph-tb">♭</div><div class="ph-tv">+2</div><div class="ph-tb">♯</div></div>
+            <div class="ph-tool active">🎸 Accords</div>
+            <div style="margin-left:auto;display:flex;border:1px solid var(--border2);border-radius:4px;overflow:hidden">
+              <div class="ph-tb" style="font-size:9px">A−</div>
+              <div class="ph-tb" style="font-size:9px;border-left:1px solid var(--border2)">A+</div>
+            </div>
+          </div>
+          <div class="ph-content">
+            <span class="ph-section-lbl">Couplet</span>
+            <span class="ph-chord">Bm</span>Hier encore<br>
+            j'avais <span class="ph-chord">A</span>vingt ans<br>
+            Je <span class="ph-chord">G</span>caressais le <span class="ph-chord">D</span>temps<br>
+            Et <span class="ph-chord">Bm</span>jouais de la <span class="ph-chord">F#</span>vie<br>
+            <span class="ph-section-lbl">Refrain</span>
+            Comme on joue <span class="ph-chord">D</span>de l'a<span class="ph-chord">A</span>mour…
+          </div>
+          <div style="display:flex;align-items:center;padding:7px;background:var(--bg2);border-top:1px solid var(--border);gap:6px">
+            <button style="background:var(--surface);border:1px solid var(--border2);border-radius:5px;font-size:16px;width:32px;height:28px;color:var(--text2)">◀</button>
+            <div style="flex:1;text-align:center;font-size:9px;color:var(--text3);font-weight:700">2 / 5</div>
+            <button style="background:var(--surface);border:1px solid var(--border2);border-radius:5px;font-size:16px;width:32px;height:28px;color:var(--text2)">▶</button>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Mode lecture (transposé +2)</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Transposer les accords</div>
+        <div class="step-desc">Appuyez sur <strong>♯</strong> pour monter d'un demi-ton, <strong>♭</strong> pour descendre. Le chiffre au centre indique le décalage. Tous les accords se mettent à jour instantanément.</div>
+        <div class="tip">💡 <strong>Exemple :</strong> 2 fois ♯ = Am devient Bm, G devient A, F devient G… L'app gère tout automatiquement.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Masquer les accords (mode paroles)</div>
+        <div class="step-desc">Appuyez sur le bouton <strong>🎸 Accords</strong> pour basculer en affichage paroles seules. Pratique pour les chanteurs.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Ajuster la taille du texte</div>
+        <div class="step-desc"><strong>A+</strong> pour agrandir, <strong>A−</strong> pour réduire. Utile si vous lisez à distance depuis la scène.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Navigation entre chansons (mode concert)</div>
+        <div class="step-desc">Si vous avez ouvert la chanson depuis une <strong>setlist</strong>, une barre ◀ / ▶ apparaît en bas. Naviguez entre les chansons sans repasser par la liste.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ S4 ══════════════════ -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div class="section-icon">✏️</div>
+    <div class="section-title">Créer &amp; éditer une chanson</div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Accéder à l'éditeur</div>
+        <div class="step-desc">Depuis la bibliothèque, appuyez sur <strong>⋮</strong> à côté d'une chanson → <strong>Éditer</strong>. Ou depuis le lecteur, appuyez sur <strong>✏️</strong> en haut à droite.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header" style="background:var(--primary2)">
+            <div class="ph-btn" style="font-size:10px;background:rgba(255,255,255,.1)">✕</div>
+            <div class="ph-h1">Éditer : Hier encore</div>
+            <button style="background:var(--primary);color:var(--cream);border:none;border-radius:4px;padding:4px 8px;font-size:9px;font-weight:700">💾 Sauver</button>
+          </div>
+          <div class="ph-editor-meta">
+            <div class="ph-meta-in">Hier encore</div>
+            <div class="ph-meta-in" style="max-width:80px">Ch. Aznavour</div>
+          </div>
+          <div class="ph-palette">
+            <div class="ph-ctag">Am</div><div class="ph-ctag">G</div><div class="ph-ctag">F</div><div class="ph-ctag">C</div><div class="ph-ctag">Em</div>
+            <div class="ph-stag">[Couplet]</div><div class="ph-stag">[Refrain]</div>
+          </div>
+          <div class="ph-editor-area"><span style="color:var(--accent);font-size:8px">[Couplet]</span><br><span style="color:var(--chord)">[Am]</span>Hier encore<br>j'avais <span style="color:var(--chord)">[G]</span>vingt ans<br>Je <span style="color:var(--chord)">[F]</span>caressais le <span style="color:var(--chord)">[C]</span>temps<br><span style="color:var(--accent);font-size:8px">[Refrain]</span><br>Comme on joue de l'amour…<span style="animation:blink 1s infinite">|</span></div>
+        </div>
+      </div>
+      <div class="phone-label">L'éditeur avec palette d'accords</div>
+    </div>
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
+          <div class="ph-nav"><div class="ph-tab active">📚 Bibliothèque</div><div class="ph-tab">🎵 Setlist</div></div>
+          <div class="ph-search"><div class="ph-search-in">Rechercher…</div><div class="ph-add">＋</div></div>
+          <div class="ph-song"><div class="ph-avatar">H</div><div class="ph-song-info"><div class="ph-song-t">Hier encore</div><div class="ph-song-a">Charles Aznavour</div></div><div class="ph-dots" style="color:var(--accent)">⋮</div></div>
+          <div class="ph-ctx">
+            <div class="ph-ctx-item"><div class="ph-ctx-icon">👁</div>Ouvrir</div>
+            <div class="ph-ctx-item" style="background:var(--bg2);color:var(--primary)"><div class="ph-ctx-icon">✏️</div><strong>Éditer</strong></div>
+            <div class="ph-ctx-item"><div class="ph-ctx-icon">🎵</div>Ajouter à la setlist</div>
+            <div class="ph-ctx-item"><div class="ph-ctx-icon">📤</div>Exporter en TXT</div>
+            <div class="ph-ctx-item"><div class="ph-ctx-icon">🗑</div>Supprimer</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Menu ⋮ → Éditer</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Insérer un accord avec la palette</div>
+        <div class="step-desc">Placez votre curseur dans le texte à l'endroit exact où l'accord doit apparaître, puis appuyez sur l'accord dans la barre colorée (ex : <code>Am</code>). L'accord s'insère au format <code>[Am]</code>.</div>
+        <div class="tip">💡 Les accords s'écrivent entre crochets collés au mot qui suit : <code>[Am]Hier</code> <code>[G]encore</code> — c'est le format ChordPro.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Ajouter des marqueurs de sections</div>
+        <div class="step-desc">La palette contient aussi <code>[Couplet]</code>, <code>[Refrain]</code>, <code>[Bridge]</code>… Ils apparaissent en <span style="color:var(--accent);font-weight:700">orange</span> dans le lecteur pour repérer rapidement les parties.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Sauvegarder</div>
+        <div class="step-desc">Appuyez sur <strong>💾 Sauver</strong> en haut à droite. La chanson est enregistrée localement sur votre appareil.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <strong>Mise en forme :</strong> <code>**gras**</code> &nbsp;·&nbsp; <code>*italique*</code> &nbsp;·&nbsp; <code>__souligné__</code>
+  </div>
+</div>
+
+<!-- ══════════════════ S5 ══════════════════ -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div class="section-icon">🎵</div>
+    <div class="section-title">Gérer les setlists</div>
+  </div>
+
+  <div class="highlight">
+    Une <strong>setlist</strong> est une liste ordonnée de chansons pour un concert ou une répétition. Vous pouvez en créer autant que vous voulez et naviguer entre elles en plein concert.
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Accéder aux setlists</div>
+        <div class="step-desc">Appuyez sur l'onglet <strong>🎵 Setlist</strong> en haut de l'écran.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Créer une nouvelle setlist</div>
+        <div class="step-desc">Appuyez sur <strong>＋ Nouvelle</strong>, saisissez un nom (ex : "Concert du 14 juillet") et validez.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Ajouter une chanson</div>
+        <div class="step-desc">Depuis la <strong>Bibliothèque</strong>, appuyez sur <strong>⋮</strong> à côté d'une chanson → <strong>Ajouter à la setlist</strong>.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Réordonner les chansons</div>
+        <div class="step-desc">Maintenez le doigt sur le symbole <strong>⠿</strong> à gauche d'une chanson et glissez-la vers le haut ou le bas.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
+          <div class="ph-nav"><div class="ph-tab">📚 Bibliothèque</div><div class="ph-tab active">🎵 Setlist</div></div>
+          <div class="ph-sl-header">
+            <div class="ph-sl-select">🎵 Concert 14 juillet</div>
+            <div class="ph-sl-btn">＋ Nouvelle</div>
+            <div class="ph-sl-btn" style="background:var(--red)">🗑</div>
+          </div>
+          <div class="ph-sl-item">
+            <div class="ph-handle">⠿</div><div class="ph-sl-num">1</div>
+            <div class="ph-avatar">H</div>
+            <div class="ph-song-info"><div class="ph-song-t" style="font-size:10px">Hier encore</div><div class="ph-song-a">Ch. Aznavour</div></div>
+            <div class="ph-dots">⋮</div>
+          </div>
+          <div class="ph-sl-item">
+            <div class="ph-handle">⠿</div><div class="ph-sl-num">2</div>
+            <div class="ph-avatar">L</div>
+            <div class="ph-song-info"><div class="ph-song-t" style="font-size:10px">La Bohème</div><div class="ph-song-a">Ch. Aznavour</div></div>
+            <div class="ph-dots">⋮</div>
+          </div>
+          <div class="ph-sl-item" style="opacity:.55">
+            <div class="ph-handle">⠿</div><div class="ph-sl-num">3</div>
+            <div class="ph-avatar">H</div>
+            <div class="ph-song-info"><div class="ph-song-t" style="font-size:10px">Hallelujah</div><div class="ph-song-a">L. Cohen</div></div>
+            <div class="ph-dots">⋮</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">Vue Setlist — glisser ⠿ pour ordonner</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ S6 ══════════════════ -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div class="section-icon">⚙️</div>
+    <div class="section-title">Paramètres</div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Accéder aux paramètres</div>
+        <div class="step-desc">Appuyez sur l'icône <strong>⚙️</strong> en haut à droite du bandeau principal.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-wrap">
+    <div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-header"><div class="ph-btn" style="font-size:10px;background:rgba(255,255,255,.1)">✕</div><div class="ph-h1" style="margin-left:4px">Paramètres</div></div>
+          <div class="ph-sett-section">Sauvegarde &amp; Restauration</div>
+          <div class="ph-sett-row"><div class="ph-row-icon">📦</div><div class="ph-row-info"><div class="ph-row-label">Exporter sauvegarde</div><div class="ph-row-sub">Toutes vos chansons → .json</div></div><div class="ph-row-arrow">›</div></div>
+          <div class="ph-sett-row"><div class="ph-row-icon">✉️</div><div class="ph-row-info"><div class="ph-row-label">Envoyer par e-mail</div><div class="ph-row-sub">Ouvre votre appli mail</div></div><div class="ph-row-arrow">›</div></div>
+          <div class="ph-sett-row"><div class="ph-row-icon">📥</div><div class="ph-row-info"><div class="ph-row-label">Importer sauvegarde</div><div class="ph-row-sub">Restaurer depuis .json</div></div><div class="ph-row-arrow">›</div></div>
+          <div class="ph-sett-section">Mon profil</div>
+          <div class="ph-sett-row"><div class="ph-row-icon">👤</div><div class="ph-row-info"><div class="ph-row-label">Nom affiché</div><div class="ph-row-sub">Connecté en tant que Bernard</div></div><div class="ph-row-arrow">›</div></div>
+          <div class="ph-sett-section">Thème &amp; Couleurs</div>
+          <div class="ph-sett-row"><div class="ph-row-icon">🎨</div><div class="ph-row-info"><div class="ph-row-label">Thèmes prédéfinis</div><div class="ph-row-sub">Bois · Nuit · Nature · Océan…</div></div><div class="ph-row-arrow">›</div></div>
+        </div>
+      </div>
+      <div class="phone-label">Le panneau Paramètres</div>
+    </div>
+  </div>
+
+  <table class="table">
+    <thead><tr><th>Option</th><th>À quoi ça sert ?</th></tr></thead>
+    <tbody>
+      <tr><td>📦 Exporter sauvegarde</td><td>Crée un fichier <code>.json</code> avec toutes vos chansons et setlists. À faire régulièrement !</td></tr>
+      <tr><td>✉️ Envoyer par e-mail</td><td>Télécharge la sauvegarde et ouvre votre appli mail pour l'envoyer (à vous-même pour transférer sur un autre appareil, ou à quelqu'un d'autre).</td></tr>
+      <tr><td>📥 Importer sauvegarde</td><td>Restaure toutes vos données depuis un fichier <code>.json</code> exporté précédemment.</td></tr>
+      <tr><td>👤 Nom affiché</td><td>Modifier le prénom ou pseudo affiché dans le titre de l'app.</td></tr>
+      <tr><td>🎨 Thème &amp; Couleurs</td><td>Choisir parmi 6 thèmes prédéfinis (Bois, Nuit, Nature, Océan…) ou personnaliser chaque couleur.</td></tr>
+      <tr><td>🔍 Sites de paroles</td><td>Raccourcis vers Genius, Ultimate Guitar, Musixmatch, La Boîte à Chansons pour rechercher des paroles.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn">
+    ⚠️ <strong>Attention :</strong> L'importation d'une sauvegarde <strong>remplace</strong> toutes vos données actuelles. Pensez à exporter d'abord si vous voulez conserver vos chansons.
+  </div>
+</div>
+
+</div><!-- /content -->
+<footer>🎸 JAY's Songbook · Guide d'utilisation · Bonne musique !</footer>
+</body>
+</html>
