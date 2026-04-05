@@ -116,7 +116,14 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 .presenter-content{flex:1;overflow-y:auto;padding:20px 20px 60px}
 
 /* SONG RENDER */
-.song-rendered{font-family:var(--font-mono);line-height:1.9;white-space:pre-wrap;word-break:break-word}
+.song-rendered{font-family:var(--font-mono);line-height:2;white-space:pre-wrap;word-break:break-word;font-size:19px;font-weight:700}
+.song-rendered.font-serif{font-family:var(--font-display);line-height:2.1;letter-spacing:.01em;font-weight:700}
+.song-rendered .chord-mark{color:var(--chord);font-weight:600;background:var(--chord-bg);border-radius:3px;padding:0 3px;font-size:.78em;vertical-align:super;line-height:0;cursor:default;font-family:var(--font-mono)}
+.tempo-group{display:flex;align-items:center;border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+#btn-metro-toggle{background:var(--surface);border:none;padding:7px 10px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-left:1px solid var(--border2)}
+#btn-metro-toggle:active{background:var(--bg3)}
+#btn-metro-toggle.running{background:var(--accent);color:#fff}
+#tempo-display{font-size:12px;font-weight:700}
 .song-rendered .chord-mark{color:var(--chord);font-weight:600;background:var(--chord-bg);border-radius:3px;padding:0 3px;font-size:.82em;vertical-align:super;line-height:0;cursor:default}
 .chord-mark.hidden{display:none}
 .song-rendered .section-label{color:var(--accent);font-weight:700;font-family:var(--font-body);font-size:.88em;text-transform:uppercase;letter-spacing:.08em;display:block;margin-top:16px;margin-bottom:2px}
@@ -220,7 +227,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 <body>
 
 <div id="header">
-  <h1>🎸 JAY's Songbook</h1>
+  <h1 id="app-title">🎸 JAY's Songbook</h1>
   <button class="header-btn" id="btn-settings">⚙️</button>
 </div>
 <div id="nav">
@@ -301,6 +308,13 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
       <button class="transpose-btn" id="btn-transpose-up">♯</button>
     </div>
     <button class="tool-btn active" id="btn-toggle-chords">🎸 Accords</button>
+    <button class="tool-btn" id="btn-toggle-font" title="Changer la police">𝐴</button>
+    <div class="tempo-group">
+      <button class="transpose-btn" id="btn-tempo-down">−</button>
+      <div class="transpose-val" id="tempo-display" style="min-width:42px;cursor:pointer" title="Cliquer pour démarrer/arrêter">♩80</div>
+      <button class="transpose-btn" id="btn-tempo-up">+</button>
+      <button class="transpose-btn" id="btn-metro-toggle" title="Démarrer/Arrêter le métronome">▶</button>
+    </div>
     <div class="font-group" style="margin-left:auto">
       <button class="font-btn" id="btn-font-down">A−</button>
       <button class="font-btn" id="btn-font-up">A+</button>
@@ -381,9 +395,23 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
         <div class="row-info"><div class="row-label">Exporter sauvegarde</div><div class="row-sub">Toutes vos chansons + setlists → .json</div></div>
         <span class="row-arrow">›</span>
       </div>
+      <div class="settings-row" id="sett-export-mail">
+        <span class="row-icon">✉️</span>
+        <div class="row-info"><div class="row-label">Envoyer par e-mail</div><div class="row-sub">Ouvre votre appli mail avec la sauvegarde</div></div>
+        <span class="row-arrow">›</span>
+      </div>
       <div class="settings-row" id="sett-import">
         <span class="row-icon">📥</span>
         <div class="row-info"><div class="row-label">Importer sauvegarde</div><div class="row-sub">Restaurer depuis un fichier .json</div></div>
+        <span class="row-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Mon profil</div>
+      <div class="settings-row" id="sett-username">
+        <span class="row-icon">👤</span>
+        <div class="row-info"><div class="row-label">Nom affiché</div><div class="row-sub" id="sett-username-sub">Personnaliser le titre de l'app</div></div>
         <span class="row-arrow">›</span>
       </div>
     </div>
@@ -475,7 +503,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/p
 
 // ── STATE ──
 let songs=[],setlists=[],activeSetlistId=null;
-let currentSongId=null,chordsVisible=true,fontSize=16,transposeVal=0;
+let currentSongId=null,chordsVisible=true,fontSize=19,transposeVal=0;
 let ctxSongId=null,ctxIsSetlist=false,dragSrc=null;
 
 const NOTES      =['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -741,6 +769,104 @@ document.getElementById('btn-transpose-down').addEventListener('click',()=>{
 });
 document.getElementById('btn-font-up').addEventListener('click',()=>{fontSize=Math.min(fontSize+2,36);document.getElementById('song-rendered').style.fontSize=fontSize+'px'});
 document.getElementById('btn-font-down').addEventListener('click',()=>{fontSize=Math.max(fontSize-2,10);document.getElementById('song-rendered').style.fontSize=fontSize+'px'});
+
+// ── BASCULE POLICE ──
+let fontIsSerif=false;
+document.getElementById('btn-toggle-font').addEventListener('click',()=>{
+  fontIsSerif=!fontIsSerif;
+  const el=document.getElementById('song-rendered');
+  el.classList.toggle('font-serif',fontIsSerif);
+  const btn=document.getElementById('btn-toggle-font');
+  btn.classList.toggle('active',fontIsSerif);
+  btn.title=fontIsSerif?'Police : Serif (Playfair)':'Police : Mono (Source Code Pro)';
+});
+
+// ── MÉTRONOME ──
+let metroTempo=80,metroRunning=false,metroInterval=null,metroAudioCtx=null,metroBeat=0;
+
+function getAudioCtx(){
+  if(!metroAudioCtx)metroAudioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  return metroAudioCtx;
+}
+
+function playWoodClick(isAccent=false){
+  const ctx=getAudioCtx();
+  const t=ctx.currentTime;
+
+  // Bruit filtré façon claquement bois
+  const bufSize=ctx.sampleRate*0.04;
+  const buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<bufSize;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/bufSize,8);
+
+  const src=ctx.createBufferSource();
+  src.buffer=buf;
+
+  // Filtre passe-bande : fréquence plus haute sur l'accent
+  const bpf=ctx.createBiquadFilter();
+  bpf.type='bandpass';
+  bpf.frequency.value=isAccent?1400:900;
+  bpf.Q.value=3;
+
+  // Gain
+  const gain=ctx.createGain();
+  gain.gain.setValueAtTime(isAccent?1.4:0.9,t);
+  gain.gain.exponentialRampToValueAtTime(0.001,t+0.05);
+
+  src.connect(bpf);bpf.connect(gain);gain.connect(ctx.destination);
+  src.start(t);src.stop(t+0.06);
+}
+
+function metroTick(){
+  metroBeat=(metroBeat+1)%4;
+  playWoodClick(metroBeat===0); // accent sur le temps 1
+}
+
+function updateTempoDisplay(){
+  document.getElementById('tempo-display').textContent='♩'+metroTempo;
+}
+
+function startMetro(){
+  if(metroRunning)return;
+  // Résoudre contexte suspendu (politique autoplay navigateurs)
+  if(metroAudioCtx&&metroAudioCtx.state==='suspended')metroAudioCtx.resume();
+  metroRunning=true;metroBeat=-1;
+  metroTick(); // premier tic immédiat
+  metroInterval=setInterval(metroTick,60000/metroTempo);
+  document.getElementById('btn-metro-toggle').textContent='■';
+  document.getElementById('btn-metro-toggle').classList.add('running');
+}
+
+function stopMetro(){
+  if(!metroRunning)return;
+  metroRunning=false;
+  clearInterval(metroInterval);metroInterval=null;
+  document.getElementById('btn-metro-toggle').textContent='▶';
+  document.getElementById('btn-metro-toggle').classList.remove('running');
+}
+
+function restartMetroIfRunning(){
+  if(!metroRunning)return;
+  clearInterval(metroInterval);
+  metroInterval=setInterval(metroTick,60000/metroTempo);
+}
+
+document.getElementById('btn-metro-toggle').addEventListener('click',()=>{
+  metroRunning?stopMetro():startMetro();
+});
+document.getElementById('tempo-display').addEventListener('click',()=>{
+  metroRunning?stopMetro():startMetro();
+});
+document.getElementById('btn-tempo-up').addEventListener('click',()=>{
+  metroTempo=Math.min(metroTempo+2,300);
+  updateTempoDisplay();restartMetroIfRunning();
+});
+document.getElementById('btn-tempo-down').addEventListener('click',()=>{
+  metroTempo=Math.max(metroTempo-2,20);
+  updateTempoDisplay();restartMetroIfRunning();
+});
+// Arrêter le métronome quand on ferme le presenter
+document.getElementById('btn-close-presenter').addEventListener('click',stopMetro);
 
 // ── EDITOR ──
 function buildChordPalette(){
@@ -1187,6 +1313,66 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 // ── INIT ──
 load();buildChordPalette();renderLibrary();renderSetlist();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+// ── NOM UTILISATEUR ──
+function applyUsername(name){
+  const title=name?`🎸 ${name}'s Songbook`:"🎸 JAY's Songbook";
+  document.getElementById('app-title').textContent=title;
+  document.title=title.replace('🎸 ','');
+  const sub=document.getElementById('sett-username-sub');
+  if(sub)sub.textContent=name?`Connecté en tant que ${name}`:'Personnaliser le titre de l\'app';
+}
+function showUsernameModal(isFirst=false){
+  const current=localStorage.getItem('jsb_username')||'';
+  showModal(`<h3>${isFirst?'👋 Bienvenue !':'👤 Nom affiché'}</h3>
+    <p>${isFirst?'Comment souhaitez-vous appeler votre Songbook ?':'Changer le nom affiché dans le titre de l\'app.'}</p>
+    <input id="username-input" type="text" placeholder="Votre prénom ou pseudo" value="${esc(current)}" maxlength="24">
+    <div class="modal-btns">
+      ${!isFirst?`<button onclick="closeModal()">Annuler</button>`:''}
+      ${current&&!isFirst?`<button onclick="clearUsername()">Effacer</button>`:''}
+      <button class="primary" onclick="saveUsername(${isFirst})">Valider</button>
+    </div>`);
+  setTimeout(()=>document.getElementById('username-input')?.focus(),100);
+}
+window.saveUsername=function(isFirst=false){
+  const val=document.getElementById('username-input').value.trim();
+  localStorage.setItem('jsb_username',val);
+  localStorage.setItem('jsb_username_set','1');
+  applyUsername(val);
+  closeModal();
+  toast(val?`🎸 Bienvenue, ${val} !`:'🎸 Nom réinitialisé');
+};
+window.clearUsername=function(){
+  localStorage.removeItem('jsb_username');
+  localStorage.setItem('jsb_username_set','1');
+  applyUsername('');
+  closeModal();
+  toast('Nom effacé');
+};
+document.getElementById('sett-username').addEventListener('click',()=>showUsernameModal(false));
+
+// Appliquer le nom sauvegardé
+const _savedName=localStorage.getItem('jsb_username')||'';
+applyUsername(_savedName);
+// Prompt au premier démarrage
+if(!localStorage.getItem('jsb_username_set')){
+  setTimeout(()=>showUsernameModal(true),600);
+}
+
+// ── EXPORT MAIL ──
+document.getElementById('sett-export-mail').addEventListener('click',()=>{
+  const data={version:2,exportDate:new Date().toISOString(),songs,setlists,activeSetlistId,theme:localStorage.getItem('jsb_theme')||null};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const fileName=(localStorage.getItem('jsb_username')||'jays')+'-songbook-'+new Date().toISOString().slice(0,10)+'.json';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileName;a.click();
+  setTimeout(()=>{
+    const name=localStorage.getItem('jsb_username')||'JAY';
+    const subject=encodeURIComponent(`${name}'s Songbook — Sauvegarde ${new Date().toLocaleDateString('fr')}`);
+    const body=encodeURIComponent(`Bonjour,\n\nVeuillez trouver ci-joint la sauvegarde de mon Songbook (${songs.length} chanson(s)).\n\nFichier : ${fileName}\n\n💡 Pour restaurer : ouvrez l'app → Paramètres → Importer sauvegarde.\n\nBonne musique ! 🎸`);
+    window.location.href=`mailto:?subject=${subject}&body=${body}`;
+    toast('📧 Mail préparé — joignez le fichier téléchargé');
+  },400);
+});
 </script>
 </body>
 </html>
