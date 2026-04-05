@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partition — JAY's Songbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.8.6/build/opensheetmusicdisplay.min.js"></script>
+<style>
+:root{
+  --bg:#FDF6EC;--bg2:#F5ECD8;--bg3:#EDE0C8;--surface:#FFFDF8;
+  --primary:#2C1810;--primary2:#5C3D2E;--accent:#C8860A;--cream:#F0E4CC;
+  --text:#1E0E06;--text2:#5C3D2E;--text3:#8B6352;
+  --border:rgba(92,61,46,0.2);--border2:rgba(92,61,46,0.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+
+/* HEADER */
+.header{background:var(--primary);color:var(--cream);padding:0 16px;height:52px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.header h1{font-family:'Playfair Display',serif;font-size:17px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:var(--cream);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:background .15s;flex-shrink:0}
+.hbtn:active{background:rgba(255,255,255,.25)}
+
+/* TOOLBAR */
+.toolbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.tbtn{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .15s}
+.tbtn:active,.tbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.zoom-group{display:flex;align-items:center;border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+.zbtn{background:var(--surface);border:none;padding:7px 12px;font-size:15px;font-weight:700;color:var(--text2);cursor:pointer}
+.zbtn:active{background:var(--bg3)}
+.zval{background:var(--bg2);padding:7px 8px;font-size:12px;font-weight:700;min-width:40px;text-align:center;border-left:1px solid var(--border2);border-right:1px solid var(--border2)}
+.page-group{display:flex;align-items:center;gap:6px;margin-left:auto}
+.page-info{font-size:13px;color:var(--text3);font-weight:700}
+
+/* SCORE AREA */
+.score-wrap{flex:1;overflow:auto;background:white;padding:20px}
+#score-container{max-width:100%}
+#score-container svg{width:100% !important;height:auto !important}
+
+/* DROPZONE */
+.drop-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;color:var(--text3);padding:32px;text-align:center}
+.drop-zone .big{font-size:64px;opacity:.3}
+.drop-zone h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--primary)}
+.drop-zone p{font-size:14px;line-height:1.6}
+.drop-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px 28px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+.drop-btn:hover{background:var(--primary2)}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:16px;color:var(--text3)}
+.spinner{width:40px;height:40px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--primary);color:var(--cream);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:999;transition:transform .3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* DARK */
+body.dark{--bg:#1A1A1A;--bg2:#242424;--bg3:#2E2E2E;--surface:#1E1E1E;--primary:#0D0D0D;--primary2:#1A1A1A;--accent:#C8860A;--cream:#C8B89A;--text:#F0E4CC;--text2:#C8B89A;--text3:#8B7B6A;--border:rgba(200,184,154,0.12);--border2:rgba(200,184,154,0.25)}
+body.dark .score-wrap{background:#2a2a2a}
+body.dark #score-container svg{filter:invert(1) hue-rotate(180deg)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <button class="hbtn" onclick="history.back()" title="Retour">←</button>
+  <h1 id="score-title">🎼 Partition</h1>
+  <button class="hbtn" onclick="document.getElementById('file-open').click()" title="Ouvrir fichier">📂</button>
+  <button class="hbtn" onclick="toggleDark()" title="Mode sombre" id="btn-dark">🌙</button>
+</div>
+
+<div class="toolbar" id="toolbar" style="display:none">
+  <div class="zoom-group">
+    <button class="zbtn" onclick="changeZoom(-10)">−</button>
+    <div class="zval" id="zoom-val">100%</div>
+    <button class="zbtn" onclick="changeZoom(10)">+</button>
+  </div>
+  <button class="tbtn" id="btn-fit" onclick="setZoomFit()">⊞ Ajuster</button>
+  <button class="tbtn" id="btn-cursor" onclick="toggleCursor()">🎯 Curseur</button>
+  <div class="page-group">
+    <button class="tbtn" onclick="changePage(-1)">◀</button>
+    <span class="page-info" id="page-info">1 / 1</span>
+    <button class="tbtn" onclick="changePage(1)">▶</button>
+  </div>
+</div>
+
+<div class="score-wrap" id="score-wrap">
+  <div id="score-container">
+    <div class="drop-zone" id="drop-zone">
+      <div class="big">🎼</div>
+      <h2>Visionneuse de partitions</h2>
+      <p>Ouvrez un fichier MusicXML (.xml, .mxl)<br>exporté depuis MuseScore, Finale, Sibelius…</p>
+      <button class="drop-btn" onclick="document.getElementById('file-open').click()">📂 Ouvrir une partition</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="file-open" accept=".xml,.mxl,.musicxml" style="display:none">
+
+<script>
+let osmd=null;
+let zoomLevel=1.0;
+let currentPage=1;
+let cursorActive=false;
+let darkMode=localStorage.getItem('jsb_dark')==='1';
+
+// Appliquer dark mode
+if(darkMode)document.body.classList.add('dark');
+
+function toggleDark(){
+  darkMode=!darkMode;
+  document.body.classList.toggle('dark',darkMode);
+  localStorage.setItem('jsb_dark',darkMode?'1':'0');
+}
+
+function toast(msg,dur=2500){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+// ── INITIALISER OSMD ──
+function initOSMD(){
+  const container=document.getElementById('score-container');
+  container.innerHTML='<div class="loading"><div class="spinner"></div><p>Chargement…</p></div>';
+  osmd=new opensheetmusicdisplay.OpenSheetMusicDisplay(container,{
+    autoResize:true,
+    backend:'svg',
+    drawTitle:true,
+    drawSubtitle:true,
+    drawComposer:true,
+    drawLyricist:true,
+    drawCredits:true,
+    followCursor:false,
+    cursorsOptions:[{type:0,alpha:0.5,color:'#C8860A'}],
+  });
+  return osmd;
+}
+
+// ── CHARGER UN XML ──
+async function loadXML(xmlString,title){
+  try{
+    if(!osmd)initOSMD();
+    const container=document.getElementById('score-container');
+    container.innerHTML='<div class="loading"><div class="spinner"></div><p>Rendu en cours…</p></div>';
+    document.getElementById('toolbar').style.display='flex';
+    document.getElementById('score-title').textContent='🎼 '+title;
+    // Réinitialiser OSMD sur le container vide
+    osmd=new opensheetmusicdisplay.OpenSheetMusicDisplay(container,{
+      autoResize:true,backend:'svg',drawTitle:true,drawSubtitle:true,
+      drawComposer:true,drawLyricist:true,drawCredits:true,
+      cursorsOptions:[{type:0,alpha:0.5,color:'#C8860A'}],
+    });
+    await osmd.load(xmlString);
+    osmd.zoom=zoomLevel;
+    await osmd.render();
+    currentPage=1;
+    updatePageInfo();
+    toast('🎼 '+title+' chargé');
+  }catch(err){
+    document.getElementById('score-container').innerHTML=
+      `<div class="drop-zone"><div class="big">❌</div><h2>Erreur de chargement</h2><p>${err.message||'Format non reconnu'}</p><button class="drop-btn" onclick="document.getElementById('file-open').click()">Réessayer</button></div>`;
+    document.getElementById('toolbar').style.display='none';
+    console.error(err);
+  }
+}
+
+// ── ZOOM ──
+function changeZoom(delta){
+  zoomLevel=Math.min(2.0,Math.max(0.2,zoomLevel+delta/100));
+  document.getElementById('zoom-val').textContent=Math.round(zoomLevel*100)+'%';
+  if(osmd){osmd.zoom=zoomLevel;osmd.render();}
+}
+function setZoomFit(){
+  const wrap=document.getElementById('score-wrap');
+  zoomLevel=Math.min(1.5,wrap.clientWidth/900);
+  document.getElementById('zoom-val').textContent=Math.round(zoomLevel*100)+'%';
+  if(osmd){osmd.zoom=zoomLevel;osmd.render();}
+}
+
+// ── PAGES ──
+function changePage(delta){
+  if(!osmd)return;
+  // OSMD gère les pages via le curseur en mode page
+  currentPage=Math.max(1,currentPage+delta);
+  updatePageInfo();
+  // Scroll vers la page approximativement
+  const svgs=document.querySelectorAll('#score-container svg');
+  if(svgs[currentPage-1])svgs[currentPage-1].scrollIntoView({behavior:'smooth'});
+}
+function updatePageInfo(){
+  const svgs=document.querySelectorAll('#score-container svg');
+  const total=Math.max(1,svgs.length);
+  document.getElementById('page-info').textContent=`${currentPage} / ${total}`;
+}
+
+// ── CURSEUR ──
+function toggleCursor(){
+  if(!osmd||!osmd.cursor)return;
+  cursorActive=!cursorActive;
+  document.getElementById('btn-cursor').classList.toggle('active',cursorActive);
+  if(cursorActive){osmd.cursor.show();osmd.cursor.reset();}
+  else{osmd.cursor.hide();}
+}
+
+// ── OUVERTURE FICHIER ──
+document.getElementById('file-open').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file)return;
+  const title=file.name.replace(/\.[^.]+$/,'');
+  try{
+    if(file.name.toLowerCase().endsWith('.mxl')){
+      // Décompresser le .mxl (zip)
+      const ab=await file.arrayBuffer();
+      const zip=await JSZip.loadAsync(ab);
+      // Trouver le fichier XML principal (rootfiles dans META-INF/container.xml)
+      let xmlContent=null;
+      const container=zip.file('META-INF/container.xml');
+      if(container){
+        const containerXml=await container.async('text');
+        const m=containerXml.match(/full-path="([^"]+\.xml)"/i);
+        if(m){const xmlFile=zip.file(m[1]);if(xmlFile)xmlContent=await xmlFile.async('text');}
+      }
+      if(!xmlContent){
+        // Fallback : premier .xml trouvé
+        for(const[name,f] of Object.entries(zip.files)){
+          if(name.endsWith('.xml')&&!name.startsWith('META')){xmlContent=await f.async('text');break;}
+        }
+      }
+      if(xmlContent)await loadXML(xmlContent,title);
+      else toast('❌ Impossible de lire le fichier .mxl');
+    } else {
+      const text=await file.text();
+      await loadXML(text,title);
+    }
+  }catch(err){toast('❌ Erreur : '+err.message);console.error(err);}
+  e.target.value='';
+});
+
+// ── DRAG & DROP ──
+const wrap=document.getElementById('score-wrap');
+wrap.addEventListener('dragover',e=>{e.preventDefault();wrap.style.outline='3px dashed var(--accent)'});
+wrap.addEventListener('dragleave',()=>wrap.style.outline='');
+wrap.addEventListener('drop',async e=>{
+  e.preventDefault();wrap.style.outline='';
+  const file=e.dataTransfer.files[0];if(!file)return;
+  document.getElementById('file-open').dispatchEvent(Object.assign(new Event('change'),{target:{files:[file],value:''}}));
+});
+
+// ── CHARGER DEPUIS SONGBOOK (sessionStorage) ──
+window.addEventListener('load',async()=>{
+  try{
+    const xml=sessionStorage.getItem('jsb_score_xml');
+    const title=sessionStorage.getItem('jsb_score_title')||'Partition';
+    if(xml){
+      sessionStorage.removeItem('jsb_score_xml');
+      sessionStorage.removeItem('jsb_score_title');
+      if(xml.startsWith('[MXL_B64:')){
+        // Décoder le base64 et décompresser
+        const b64=xml.slice(9,xml.length-1);
+        const binary=atob(b64);
+        const bytes=new Uint8Array(binary.length);
+        for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+        const zip=await JSZip.loadAsync(bytes.buffer);
+        let xmlContent=null;
+        const containerFile=zip.file('META-INF/container.xml');
+        if(containerFile){
+          const containerXml=await containerFile.async('text');
+          const m=containerXml.match(/full-path="([^"]+\.xml)"/i);
+          if(m){const xf=zip.file(m[1]);if(xf)xmlContent=await xf.async('text');}
+        }
+        if(!xmlContent){
+          for(const[name,f] of Object.entries(zip.files)){
+            if(name.endsWith('.xml')&&!name.startsWith('META')){xmlContent=await f.async('text');break;}
+          }
+        }
+        if(xmlContent)await loadXML(xmlContent,title);
+      } else {
+        await loadXML(xml,title);
+      }
+    }
+  }catch(err){console.error('Score load error:',err);}
+});
+
+// ── RACCOURCIS CLAVIER ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'&&osmd?.cursor&&cursorActive){osmd.cursor.next();return;}
+  if(e.key==='ArrowLeft'&&osmd?.cursor&&cursorActive){osmd.cursor.previous?.();return;}
+  if(e.key==='+'||e.key==='=')changeZoom(10);
+  if(e.key==='-')changeZoom(-10);
+});
+</script>
+</body>
+</html>
