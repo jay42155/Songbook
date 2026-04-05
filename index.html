@@ -229,7 +229,13 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
-#file-input,#image-input,#camera-input,#backup-input{display:none}
+#file-input,#image-input,#camera-input,#backup-input,#score-input,#mp3-input{display:none}
+/* Modale mixage iframe */
+#mixer-modal{position:fixed;inset:0;z-index:800;display:none;flex-direction:column;background:rgba(0,0,0,.6)}
+#mixer-modal.open{display:flex}
+.mixer-bar{background:var(--primary);color:var(--cream);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.mixer-bar h3{font-family:var(--font-display);font-size:16px;flex:1}
+#mixer-frame{flex:1;border:none;background:#fff}
 </style>
 </head>
 <body>
@@ -260,6 +266,10 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
         <button class="import-btn" id="btn-image-import">
           <span class="icon">🖼️</span>Image
           <small style="font-weight:400;font-size:11px">JPG, PNG, GIF…</small>
+        </button>
+        <button class="import-btn" id="btn-score-import">
+          <span class="icon">🎼</span>Partition
+          <small style="font-weight:400;font-size:11px">MusicXML, .mxl</small>
         </button>
         <button class="import-btn" id="btn-gdrive"><span class="icon">☁️</span>Google Drive</button>
         <button class="import-btn" id="btn-paste"><span class="icon">📋</span>Coller texte</button>
@@ -331,10 +341,29 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
   <div class="presenter-content">
     <div id="song-rendered" class="song-rendered"></div>
   </div>
-  <div class="setlist-nav" id="setlist-nav" style="display:none">
-    <button class="setlist-nav-btn" id="btn-prev-song">◀</button>
-    <div class="setlist-nav-info" id="setlist-nav-info">1 / 1</div>
-    <button class="setlist-nav-btn" id="btn-next-song">▶</button>
+
+  <!-- PLAYER MP3 -->
+  <div id="mp3-player" style="display:none;background:var(--bg2);border-top:1px solid var(--border);padding:8px 16px;flex-shrink:0;display:none;align-items:center;gap:10px">
+    <button id="mp3-playpause" style="background:var(--accent);border:none;border-radius:50%;width:36px;height:36px;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">▶</button>
+    <div style="flex:1;min-width:0">
+      <div id="mp3-title" style="font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
+      <input type="range" id="mp3-progress" value="0" min="0" max="100" step="0.1" style="width:100%;height:3px;accent-color:var(--accent);cursor:pointer;margin-top:3px">
+    </div>
+    <button id="mp3-stop" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;flex-shrink:0">⏹</button>
+    <button id="mp3-load" title="Charger un MP3" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;flex-shrink:0">📂</button>
+    <button id="btn-mixer" title="Table de mixage" style="background:var(--primary2);border:none;border-radius:8px;color:var(--cream);font-size:14px;font-weight:700;padding:6px 10px;cursor:pointer;flex-shrink:0">🎛</button>
+  </div>
+
+  <!-- BARRE BASSE : MP3 toggle + nav setlist -->
+  <div id="bottom-bar" style="display:flex;flex-shrink:0;border-top:1px solid var(--border)">
+    <button id="btn-toggle-mp3" style="background:var(--bg2);border:none;border-right:1px solid var(--border);color:var(--text3);font-size:18px;padding:0 14px;cursor:pointer;height:44px;flex-shrink:0" title="Player MP3">🎵</button>
+    <div id="setlist-nav" style="display:none;flex:1;align-items:center;justify-content:space-between;padding:0 8px;background:var(--bg2);gap:8px">
+      <button class="setlist-nav-btn" id="btn-prev-song">◀</button>
+      <div class="setlist-nav-info" id="setlist-nav-info">1 / 1</div>
+      <button class="setlist-nav-btn" id="btn-next-song">▶</button>
+    </div>
+    <div id="setlist-nav-placeholder" style="flex:1;background:var(--bg2)"></div>
+    <button id="btn-mixer-fixed" title="Table de mixage 10.10.1.1" style="background:var(--primary);border:none;border-left:1px solid var(--border);color:var(--cream);font-size:18px;padding:0 14px;cursor:pointer;height:44px;flex-shrink:0">🎛</button>
   </div>
 </div>
 
@@ -525,6 +554,18 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 <input type="file" id="image-input" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif" multiple>
 <input type="file" id="camera-input" accept="image/*" capture="environment">
 <input type="file" id="backup-input" accept=".json">
+<input type="file" id="score-input" accept=".xml,.mxl,.musicxml">
+<input type="file" id="mp3-input" accept="audio/mpeg,audio/mp3,audio/*">
+
+<!-- MODALE TABLE DE MIXAGE -->
+<div id="mixer-modal">
+  <div class="mixer-bar">
+    <h3>🎛 Table de mixage</h3>
+    <span style="font-size:12px;opacity:.7">10.10.1.1</span>
+    <button class="header-btn" onclick="closeMixer()" style="background:rgba(255,255,255,.15)">✕</button>
+  </div>
+  <iframe id="mixer-frame" src="" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+</div>
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -705,8 +746,14 @@ function openPresenter(id, fromSetlist=false){
 
 function updateSetlistNav(){
   const nav=document.getElementById('setlist-nav');
-  if(!presenterSetlistIds.length){nav.style.display='none';return;}
+  const placeholder=document.getElementById('setlist-nav-placeholder');
+  if(!presenterSetlistIds.length){
+    nav.style.display='none';
+    if(placeholder)placeholder.style.display='block';
+    return;
+  }
   nav.style.display='flex';
+  if(placeholder)placeholder.style.display='none';
   const total=presenterSetlistIds.length;
   const idx=presenterSetlistIdx;
   document.getElementById('setlist-nav-info').textContent=`${idx+1} / ${total}`;
@@ -1738,6 +1785,127 @@ window.applyModalTempo=function(wasRunning){
   closeModal();
   if(wasRunning)startMetro();
 };
+
+// ── PLAYER MP3 ──
+const mp3Audio=new Audio();
+let mp3PlayerVisible=false;
+
+document.getElementById('btn-toggle-mp3').addEventListener('click',()=>{
+  mp3PlayerVisible=!mp3PlayerVisible;
+  const player=document.getElementById('mp3-player');
+  player.style.display=mp3PlayerVisible?'flex':'none';
+  document.getElementById('btn-toggle-mp3').style.color=mp3PlayerVisible?'var(--accent)':'var(--text3)';
+});
+
+document.getElementById('mp3-load').addEventListener('click',()=>{
+  document.getElementById('mp3-input').click();
+});
+
+document.getElementById('mp3-input').addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const url=URL.createObjectURL(file);
+  mp3Audio.src=url;
+  mp3Audio.load();
+  document.getElementById('mp3-title').textContent=file.name.replace(/\.[^.]+$/,'');
+  document.getElementById('mp3-playpause').textContent='▶';
+  // Afficher le player si pas encore visible
+  if(!mp3PlayerVisible){
+    mp3PlayerVisible=true;
+    document.getElementById('mp3-player').style.display='flex';
+    document.getElementById('btn-toggle-mp3').style.color='var(--accent)';
+  }
+  e.target.value='';
+});
+
+document.getElementById('mp3-playpause').addEventListener('click',()=>{
+  if(!mp3Audio.src)return;
+  if(mp3Audio.paused){mp3Audio.play();document.getElementById('mp3-playpause').textContent='⏸';}
+  else{mp3Audio.pause();document.getElementById('mp3-playpause').textContent='▶';}
+});
+
+document.getElementById('mp3-stop').addEventListener('click',()=>{
+  mp3Audio.pause();mp3Audio.currentTime=0;
+  document.getElementById('mp3-playpause').textContent='▶';
+  document.getElementById('mp3-progress').value=0;
+});
+
+mp3Audio.addEventListener('timeupdate',()=>{
+  if(mp3Audio.duration){
+    document.getElementById('mp3-progress').value=(mp3Audio.currentTime/mp3Audio.duration)*100;
+  }
+});
+mp3Audio.addEventListener('ended',()=>{
+  document.getElementById('mp3-playpause').textContent='▶';
+  document.getElementById('mp3-progress').value=0;
+});
+document.getElementById('mp3-progress').addEventListener('input',e=>{
+  if(mp3Audio.duration)mp3Audio.currentTime=(e.target.value/100)*mp3Audio.duration;
+});
+
+// Arrêter MP3 à la fermeture du presenter
+document.getElementById('btn-close-presenter').addEventListener('click',()=>{
+  mp3Audio.pause();
+  document.getElementById('mp3-playpause').textContent='▶';
+});
+
+// ── TABLE DE MIXAGE ──
+function openMixer(){
+  const modal=document.getElementById('mixer-modal');
+  document.getElementById('mixer-frame').src='http://10.10.1.1';
+  modal.classList.add('open');
+}
+window.closeMixer=function(){
+  document.getElementById('mixer-modal').classList.remove('open');
+  document.getElementById('mixer-frame').src='';
+};
+document.getElementById('btn-mixer-fixed').addEventListener('click',openMixer);
+
+// ── IMPORT PARTITION MUSICXML ──
+document.getElementById('btn-score-import').addEventListener('click',()=>{
+  document.getElementById('import-panel').classList.remove('open');
+  document.getElementById('score-input').click();
+});
+
+document.getElementById('score-input').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file)return;
+  const title=file.name.replace(/\.[^.]+$/,'');
+  try{
+    let xmlText='';
+    if(file.name.toLowerCase().endsWith('.mxl')){
+      // .mxl = MusicXML zippé — on stocke en base64, score-viewer le décompressera
+      const ab=await file.arrayBuffer();
+      const b64=btoa(String.fromCharCode(...new Uint8Array(ab)));
+      xmlText='[MXL_B64:'+b64+']';
+    } else {
+      xmlText=await file.text();
+    }
+    const song={
+      id:uid(),title,artist:'',
+      content:'[SCORE_MUSICXML]',
+      scoreXml:xmlText,
+      isScore:true
+    };
+    songs.push(song);
+    save();renderLibrary();
+    toast('🎼 Partition importée : '+title);
+  }catch(err){toast('❌ Erreur import partition');console.error(err);}
+  e.target.value='';
+});
+
+// Ouvrir score-viewer pour les partitions
+const _origOpenPresenter=openPresenter;
+function openPresenter(id,fromSetlist=false){
+  const song=songs.find(s=>s.id===id);
+  if(song&&song.isScore){
+    // Passer la partition au viewer via sessionStorage
+    try{sessionStorage.setItem('jsb_score_xml',song.scoreXml||'');
+        sessionStorage.setItem('jsb_score_title',song.title||'');}catch{}
+    window.open('score-viewer.html','_blank');
+    return;
+  }
+  _origOpenPresenter(id,fromSetlist);
+}
+
 
 </script>
 </body>
