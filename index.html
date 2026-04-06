@@ -231,11 +231,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 #file-input,#image-input,#camera-input,#backup-input,#score-input,#mp3-input{display:none}
 /* Modale mixage iframe */
-#mixer-modal{position:fixed;inset:0;z-index:800;display:none;flex-direction:column;background:rgba(0,0,0,.6)}
-#mixer-modal.open{display:flex}
-.mixer-bar{background:var(--primary);color:var(--cream);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.mixer-bar h3{font-family:var(--font-display);font-size:16px;flex:1}
-#mixer-frame{flex:1;border:none;background:#fff}
+
 </style>
 </head>
 <body>
@@ -359,7 +355,6 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
     </div>
     <button id="mp3-stop" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;flex-shrink:0">⏹</button>
     <button id="mp3-load" title="Charger un MP3" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;flex-shrink:0">📂</button>
-    <button id="btn-mixer" title="Table de mixage" style="background:var(--primary2);border:none;border-radius:8px;color:var(--cream);font-size:14px;font-weight:700;padding:6px 10px;cursor:pointer;flex-shrink:0">🎛</button>
   </div>
 
   <!-- BARRE BASSE : MP3 toggle + nav setlist -->
@@ -371,7 +366,6 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
       <button class="setlist-nav-btn" id="btn-next-song">▶</button>
     </div>
     <div id="setlist-nav-placeholder" style="flex:1;background:var(--bg2)"></div>
-    <button id="btn-mixer-fixed" title="Table de mixage 10.10.1.1" style="background:var(--primary);border:none;border-left:1px solid var(--border);color:var(--cream);font-size:18px;padding:0 14px;cursor:pointer;height:44px;flex-shrink:0">🎛</button>
   </div>
 </div>
 
@@ -565,15 +559,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
 <input type="file" id="score-input" accept=".xml,.mxl,.musicxml">
 <input type="file" id="mp3-input" accept="audio/mpeg,audio/mp3,audio/*">
 
-<!-- MODALE TABLE DE MIXAGE -->
-<div id="mixer-modal">
-  <div class="mixer-bar">
-    <h3>🎛 Table de mixage</h3>
-    <span style="font-size:12px;opacity:.7">10.10.1.1</span>
-    <button class="header-btn" onclick="closeMixer()" style="background:rgba(255,255,255,.15)">✕</button>
-  </div>
-  <iframe id="mixer-frame" src="" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
-</div>
+
 
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -885,7 +871,7 @@ function autoScrollStep(){
   const content=document.querySelector('.presenter-content');
   if(!content){autoScrollRAF=requestAnimationFrame(autoScrollStep);return;}
   // Vitesse : px par frame (60fps). Niveau 1 = ~0.3px/frame, niveau 10 = ~3px/frame
-  const pxPerFrame=autoScrollSpeed*0.3;
+  const pxPerFrame=autoScrollSpeed*0.03;
   autoScrollAcc+=pxPerFrame;
   if(autoScrollAcc>=1){
     const move=Math.floor(autoScrollAcc);
@@ -1929,17 +1915,7 @@ document.getElementById('btn-close-presenter').addEventListener('click',()=>{
   document.getElementById('mp3-playpause').textContent='▶';
 });
 
-// ── TABLE DE MIXAGE ──
-function openMixer(){
-  const modal=document.getElementById('mixer-modal');
-  document.getElementById('mixer-frame').src='http://10.10.1.1';
-  modal.classList.add('open');
-}
-window.closeMixer=function(){
-  document.getElementById('mixer-modal').classList.remove('open');
-  document.getElementById('mixer-frame').src='';
-};
-document.getElementById('btn-mixer-fixed').addEventListener('click',openMixer);
+
 
 // ── IMPORT PARTITION MUSICXML ──
 document.getElementById('btn-score-import').addEventListener('click',()=>{
