@@ -333,10 +333,18 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
       <button class="transpose-btn" id="btn-tempo-up">+</button>
       <button class="transpose-btn" id="btn-metro-toggle" title="Démarrer/Arrêter le métronome">▶</button>
     </div>
+    <button class="tool-btn" id="btn-autoscroll" title="Défilement automatique">⏩</button>
     <div class="font-group" style="margin-left:auto">
       <button class="font-btn" id="btn-font-down">A−</button>
       <button class="font-btn" id="btn-font-up">A+</button>
     </div>
+  </div>
+  <!-- BARRE VITESSE DÉFILEMENT (masquée par défaut) -->
+  <div id="scroll-speed-bar" style="display:none;background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 16px;align-items:center;gap:10px;flex-shrink:0">
+    <span style="font-size:12px;font-weight:700;color:var(--text3);white-space:nowrap">🐢</span>
+    <input type="range" id="scroll-speed" min="1" max="10" value="3" style="flex:1;accent-color:var(--accent);cursor:pointer">
+    <span style="font-size:12px;font-weight:700;color:var(--text3);white-space:nowrap">🐇</span>
+    <span id="scroll-speed-val" style="font-size:12px;font-weight:700;color:var(--accent);min-width:24px;text-align:right">3</span>
   </div>
   <div class="presenter-content">
     <div id="song-rendered" class="song-rendered"></div>
@@ -771,6 +779,7 @@ function updateSetlistNav(){
 
 document.getElementById('btn-prev-song').addEventListener('click',()=>{
   if(presenterSetlistIdx<=0)return;
+  stopAutoScroll();
   presenterSetlistIdx--;
   const id=presenterSetlistIds[presenterSetlistIdx];
   currentSongId=id; transposeVal=0;
@@ -784,6 +793,7 @@ document.getElementById('btn-prev-song').addEventListener('click',()=>{
 });
 document.getElementById('btn-next-song').addEventListener('click',()=>{
   if(presenterSetlistIdx>=presenterSetlistIds.length-1)return;
+  stopAutoScroll();
   presenterSetlistIdx++;
   const id=presenterSetlistIds[presenterSetlistIdx];
   currentSongId=id; transposeVal=0;
@@ -862,6 +872,69 @@ document.getElementById('btn-toggle-font').addEventListener('click',()=>{
   const btn=document.getElementById('btn-toggle-font');
   btn.classList.toggle('active',fontIsSerif);
   btn.title=fontIsSerif?'Police : Serif (Playfair)':'Police : Mono (Source Code Pro)';
+});
+
+// ── DÉFILEMENT AUTOMATIQUE ──
+let autoScrollActive=false;
+let autoScrollRAF=null;
+let autoScrollSpeed=3; // 1-10
+let autoScrollAcc=0;   // accumulateur sub-pixel
+
+function autoScrollStep(){
+  if(!autoScrollActive)return;
+  const content=document.querySelector('.presenter-content');
+  if(!content){autoScrollRAF=requestAnimationFrame(autoScrollStep);return;}
+  // Vitesse : px par frame (60fps). Niveau 1 = ~0.3px/frame, niveau 10 = ~3px/frame
+  const pxPerFrame=autoScrollSpeed*0.3;
+  autoScrollAcc+=pxPerFrame;
+  if(autoScrollAcc>=1){
+    const move=Math.floor(autoScrollAcc);
+    content.scrollTop+=move;
+    autoScrollAcc-=move;
+    // Arrêt automatique en bas
+    if(content.scrollTop+content.clientHeight>=content.scrollHeight-2){
+      stopAutoScroll();
+      return;
+    }
+  }
+  autoScrollRAF=requestAnimationFrame(autoScrollStep);
+}
+
+function startAutoScroll(){
+  autoScrollActive=true;
+  autoScrollAcc=0;
+  const btn=document.getElementById('btn-autoscroll');
+  btn.classList.add('active');
+  btn.textContent='⏸';
+  btn.title='Arrêter le défilement';
+  document.getElementById('scroll-speed-bar').style.display='flex';
+  autoScrollRAF=requestAnimationFrame(autoScrollStep);
+}
+
+function stopAutoScroll(){
+  autoScrollActive=false;
+  if(autoScrollRAF){cancelAnimationFrame(autoScrollRAF);autoScrollRAF=null;}
+  const btn=document.getElementById('btn-autoscroll');
+  btn.classList.remove('active');
+  btn.textContent='⏩';
+  btn.title='Défilement automatique';
+}
+
+document.getElementById('btn-autoscroll').addEventListener('click',()=>{
+  autoScrollActive?stopAutoScroll():startAutoScroll();
+});
+
+document.getElementById('scroll-speed').addEventListener('input',e=>{
+  autoScrollSpeed=parseInt(e.target.value);
+  document.getElementById('scroll-speed-val').textContent=autoScrollSpeed;
+  // Toucher la barre relance si actif
+  if(autoScrollActive){autoScrollAcc=0;}
+});
+
+// Arrêter le défilement quand on ferme le presenter
+document.getElementById('btn-close-presenter').addEventListener('click',()=>{
+  stopAutoScroll();
+  document.getElementById('scroll-speed-bar').style.display='none';
 });
 
 // ── MÉTRONOME ──
