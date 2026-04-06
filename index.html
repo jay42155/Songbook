@@ -721,8 +721,17 @@ let presenterSetlistIds = []; // ordered song ids currently in setlist
 let presenterSetlistIdx = -1; // current position in that list
 
 function openPresenter(id, fromSetlist=false){
-  currentSongId=id; transposeVal=0;
   const song=songs.find(s=>s.id===id); if(!song)return;
+
+  // Partitions MusicXML → score-viewer
+  if(song.isScore){
+    try{sessionStorage.setItem('jsb_score_xml',song.scoreXml||'');
+        sessionStorage.setItem('jsb_score_title',song.title||'');}catch{}
+    window.open('score-viewer.html','_blank');
+    return;
+  }
+
+  currentSongId=id; transposeVal=0;
 
   // Build setlist nav context
   const sl=setlists.find(s=>s.id===activeSetlistId);
@@ -738,7 +747,6 @@ function openPresenter(id, fromSetlist=false){
   document.getElementById('presenter-song-artist').textContent=song.artist||'';
   document.getElementById('transpose-display').textContent='0';
   document.getElementById('song-rendered').style.fontSize=fontSize+'px';
-  // scroll content back to top
   document.querySelector('.presenter-content').scrollTop=0;
   renderSong(song.content||'',0);
   document.getElementById('presenter').classList.add('open');
@@ -1892,19 +1900,6 @@ document.getElementById('score-input').addEventListener('change',async e=>{
   e.target.value='';
 });
 
-// Ouvrir score-viewer pour les partitions
-const _origOpenPresenter=openPresenter;
-function openPresenter(id,fromSetlist=false){
-  const song=songs.find(s=>s.id===id);
-  if(song&&song.isScore){
-    // Passer la partition au viewer via sessionStorage
-    try{sessionStorage.setItem('jsb_score_xml',song.scoreXml||'');
-        sessionStorage.setItem('jsb_score_title',song.title||'');}catch{}
-    window.open('score-viewer.html','_blank');
-    return;
-  }
-  _origOpenPresenter(id,fromSetlist);
-}
 
 
 </script>
