@@ -743,6 +743,7 @@ function openPresenter(id, fromSetlist=false){
   document.getElementById('song-rendered').style.fontSize=fontSize+'px';
   document.querySelector('.presenter-content').scrollTop=0;
   renderSong(song.content||'',0);
+  loadSongMp3(song);
   document.getElementById('presenter').classList.add('open');
 }
 
@@ -775,6 +776,7 @@ document.getElementById('btn-prev-song').addEventListener('click',()=>{
   document.getElementById('transpose-display').textContent='0';
   document.querySelector('.presenter-content').scrollTop=0;
   renderSong(song.content||'',0);
+  loadSongMp3(song);
   updateSetlistNav();
 });
 document.getElementById('btn-next-song').addEventListener('click',()=>{
@@ -789,6 +791,7 @@ document.getElementById('btn-next-song').addEventListener('click',()=>{
   document.getElementById('transpose-display').textContent='0';
   document.querySelector('.presenter-content').scrollTop=0;
   renderSong(song.content||'',0);
+  loadSongMp3(song);
   updateSetlistNav();
 });
 
@@ -871,7 +874,7 @@ function autoScrollStep(){
   const content=document.querySelector('.presenter-content');
   if(!content){autoScrollRAF=requestAnimationFrame(autoScrollStep);return;}
   // Vitesse : px par frame (60fps). Niveau 1 = ~0.3px/frame, niveau 10 = ~3px/frame
-  const pxPerFrame=autoScrollSpeed*0.03;
+  const pxPerFrame=autoScrollSpeed*0.05;
   autoScrollAcc+=pxPerFrame;
   if(autoScrollAcc>=1){
     const move=Math.floor(autoScrollAcc);
@@ -1318,10 +1321,58 @@ document.getElementById('ctx-export-song').addEventListener('click',()=>{
   toast('📤 Exporté : '+song.title);
 });
 document.getElementById('ctx-add-setlist').addEventListener('click',()=>{
-  closeCtx();const sl=setlists.find(s=>s.id===activeSetlistId);if(!sl)return;
-  if(sl.songIds.includes(ctxSongId)){toast('Déjà dans la setlist');return}
-  sl.songIds.push(ctxSongId);save();renderSetlist();toast('🎵 Ajouté à la setlist');
+  closeCtx();
+  const song=songs.find(s=>s.id===ctxSongId);if(!song)return;
+  // Construire la modale de choix de setlist
+  const slOptions=setlists.map(sl=>{
+    const already=sl.songIds.includes(ctxSongId);
+    return`<div onclick="addToSetlistById('${sl.id}')" style="display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--border);background:var(--surface);transition:background .1s" onmouseenter="this.style.background='var(--bg2)'" onmouseleave="this.style.background='var(--surface)'">
+      <span style="font-size:16px">🎵</span>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;color:var(--text)">${esc(sl.name)}</div>
+        <div style="font-size:12px;color:var(--text3)">${sl.songIds.length} chanson(s)${already?' · <span style="color:var(--accent)">déjà présente</span>':''}</div>
+      </div>
+      ${already?'<span style="color:var(--accent);font-size:18px">✓</span>':'<span style="color:var(--text3);font-size:18px">+</span>'}
+    </div>`;
+  }).join('');
+  showModal(`<h3>🎵 Ajouter à une setlist</h3>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:8px">Chanson : <strong>${esc(song.title)}</strong></p>
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;max-height:280px;overflow-y:auto">
+      ${slOptions}
+    </div>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Fermer</button>
+      <button class="primary" onclick="createSetlistAndAdd()">＋ Nouvelle setlist</button>
+    </div>`);
 });
+
+window.addToSetlistById=function(slId){
+  const sl=setlists.find(s=>s.id===slId);if(!sl)return;
+  if(sl.songIds.includes(ctxSongId)){
+    sl.songIds=sl.songIds.filter(id=>id!==ctxSongId);
+    save();renderSetlist();closeModal();toast('↩ Retiré de : '+sl.name);
+  }else{
+    sl.songIds.push(ctxSongId);save();renderSetlist();closeModal();toast('🎵 Ajouté à : '+sl.name);
+  }
+};
+
+window.createSetlistAndAdd=function(){
+  closeModal();
+  showModal(`<h3>🎵 Nouvelle setlist</h3>
+    <input id="new-sl-name" type="text" placeholder="Nom de la setlist">
+    <div class="modal-btns">
+      <button onclick="closeModal()">Annuler</button>
+      <button class="primary" onclick="createSetlistFromCtx()">Créer</button>
+    </div>`);
+  setTimeout(()=>document.getElementById('new-sl-name')?.focus(),100);
+};
+
+window.createSetlistFromCtx=function(){
+  const name=document.getElementById('new-sl-name').value.trim();if(!name){toast('Nom requis');return;}
+  const sl={id:uid(),name,songIds:[ctxSongId]};
+  setlists.push(sl);activeSetlistId=sl.id;
+  save();renderSetlist();closeModal();toast('✅ Setlist créée et chanson ajoutée : '+name);
+};
 document.getElementById('ctx-delete').addEventListener('click',()=>{
   closeCtx();const song=songs.find(s=>s.id===ctxSongId);if(!song)return;
   if(ctxIsSetlist){
@@ -1371,7 +1422,13 @@ document.getElementById('btn-close-settings').addEventListener('click',()=>docum
 
 // Export
 document.getElementById('sett-export').addEventListener('click',()=>{
-  const data={version:2,exportDate:new Date().toISOString(),songs,setlists,activeSetlistId,theme:localStorage.getItem('jsb_theme')||null};
+  const exportSongs=songs.map(s=>{
+    const{backingTrack,...rest}=s; // exclure backingTrack (fichier audio externe)
+    // Conserver backingTrack comme référence de nom seulement (pas de données binaires)
+    if(backingTrack)rest.backingTrack=backingTrack;
+    return rest;
+  });
+  const data={version:2,exportDate:new Date().toISOString(),songs:exportSongs,setlists,activeSetlistId,theme:localStorage.getItem('jsb_theme')||null};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='jays-songbook-'+new Date().toISOString().slice(0,10)+'.json';a.click();
@@ -1456,6 +1513,30 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 load();buildChordPalette();renderLibrary();renderSetlist();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
+// ── WAKE LOCK (anti-veille) ──
+let wakeLock=null;
+async function requestWakeLock(){
+  if(!('wakeLock'in navigator))return;
+  try{
+    wakeLock=await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release',()=>{wakeLock=null;});
+  }catch(err){console.warn('WakeLock refusé:',err);}
+}
+async function releaseWakeLock(){
+  if(wakeLock){try{await wakeLock.release();}catch{}wakeLock=null;}
+}
+// Activer quand le presenter s'ouvre, désactiver à la fermeture
+document.getElementById('presenter').addEventListener('transitionend',e=>{
+  if(e.target===document.getElementById('presenter')){
+    if(document.getElementById('presenter').classList.contains('open'))requestWakeLock();
+    else releaseWakeLock();
+  }
+});
+// Réactiver si la page revient au premier plan
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&document.getElementById('presenter').classList.contains('open'))requestWakeLock();
+});
+
 // ── NOM UTILISATEUR ──
 function applyUsername(name){
   const title=name?`🎸 ${name}'s Songbook`:"🎸 JAY's Songbook";
@@ -1503,7 +1584,8 @@ if(!localStorage.getItem('jsb_username_set')){
 
 // ── EXPORT MAIL ──
 document.getElementById('sett-export-mail').addEventListener('click',()=>{
-  const data={version:2,exportDate:new Date().toISOString(),songs,setlists,activeSetlistId,theme:localStorage.getItem('jsb_theme')||null};
+  const exportSongs=songs.map(s=>{const{backingTrack,...rest}=s;if(backingTrack)rest.backingTrack=backingTrack;return rest;});
+  const data={version:2,exportDate:new Date().toISOString(),songs:exportSongs,setlists,activeSetlistId,theme:localStorage.getItem('jsb_theme')||null};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const fileName=(localStorage.getItem('jsb_username')||'jays')+'-songbook-'+new Date().toISOString().slice(0,10)+'.json';
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileName;a.click();
@@ -1856,6 +1938,29 @@ window.applyModalTempo=function(wasRunning){
 // ── PLAYER MP3 ──
 const mp3Audio=new Audio();
 let mp3PlayerVisible=false;
+let currentMp3Name=''; // nom du fichier en cours
+
+// Charger le backing track associé à la chanson courante
+function loadSongMp3(song){
+  const name=song?.backingTrack||'';
+  const titleEl=document.getElementById('mp3-title');
+  if(name){
+    titleEl.textContent=name;
+    titleEl.style.color='var(--accent)';
+    titleEl.title='Fichier associé : '+name+'\n(cliquer 📂 pour charger le fichier)';
+    currentMp3Name=name;
+    // Réinitialiser l'audio (le fichier devra être re-sélectionné)
+    mp3Audio.src='';
+    document.getElementById('mp3-playpause').textContent='▶';
+    document.getElementById('mp3-progress').value=0;
+  } else {
+    titleEl.textContent='—';
+    titleEl.style.color='var(--text2)';
+    titleEl.title='';
+    currentMp3Name='';
+    mp3Audio.src='';
+  }
+}
 
 document.getElementById('btn-toggle-mp3').addEventListener('click',()=>{
   mp3PlayerVisible=!mp3PlayerVisible;
@@ -1873,7 +1978,10 @@ document.getElementById('mp3-input').addEventListener('change',e=>{
   const url=URL.createObjectURL(file);
   mp3Audio.src=url;
   mp3Audio.load();
-  document.getElementById('mp3-title').textContent=file.name.replace(/\.[^.]+$/,'');
+  const name=file.name;
+  currentMp3Name=name;
+  document.getElementById('mp3-title').textContent=name.replace(/\.[^.]+$/,'');
+  document.getElementById('mp3-title').style.color='var(--text2)';
   document.getElementById('mp3-playpause').textContent='▶';
   // Afficher le player si pas encore visible
   if(!mp3PlayerVisible){
@@ -1881,11 +1989,28 @@ document.getElementById('mp3-input').addEventListener('change',e=>{
     document.getElementById('mp3-player').style.display='flex';
     document.getElementById('btn-toggle-mp3').style.color='var(--accent)';
   }
+  // Associer le fichier à la chanson courante
+  if(currentSongId){
+    const song=songs.find(s=>s.id===currentSongId);
+    if(song){
+      const wasAssociated=song.backingTrack===name;
+      song.backingTrack=name;
+      save();
+      if(!wasAssociated)toast('🎵 Backing track associé : '+name.replace(/\.[^.]+$/,''));
+    }
+  }
   e.target.value='';
 });
 
 document.getElementById('mp3-playpause').addEventListener('click',()=>{
-  if(!mp3Audio.src)return;
+  if(!mp3Audio.src){
+    // Pas de fichier chargé : inviter à sélectionner
+    if(currentMp3Name){
+      toast('📂 Sélectionnez le fichier : '+currentMp3Name);
+      document.getElementById('mp3-input').click();
+    }
+    return;
+  }
   if(mp3Audio.paused){mp3Audio.play();document.getElementById('mp3-playpause').textContent='⏸';}
   else{mp3Audio.pause();document.getElementById('mp3-playpause').textContent='▶';}
 });
@@ -1895,6 +2020,29 @@ document.getElementById('mp3-stop').addEventListener('click',()=>{
   document.getElementById('mp3-playpause').textContent='▶';
   document.getElementById('mp3-progress').value=0;
 });
+
+// Bouton dissocier le backing track
+document.getElementById('mp3-title').addEventListener('dblclick',()=>{
+  if(!currentSongId||!currentMp3Name)return;
+  const song=songs.find(s=>s.id===currentSongId);
+  if(!song||!song.backingTrack)return;
+  showModal(`<h3>🎵 Backing track</h3>
+    <p>Fichier associé : <strong>${esc(song.backingTrack)}</strong><br><br>
+    Chemin suggéré sur Android : <code style="font-size:12px">/Download/Btracks/${esc(song.backingTrack)}</code></p>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Fermer</button>
+      <button onclick="dissociateMp3()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer">Dissocier</button>
+    </div>`);
+});
+window.dissociateMp3=function(){
+  const song=songs.find(s=>s.id===currentSongId);
+  if(song){delete song.backingTrack;save();}
+  mp3Audio.src='';currentMp3Name='';
+  document.getElementById('mp3-title').textContent='—';
+  document.getElementById('mp3-progress').value=0;
+  document.getElementById('mp3-playpause').textContent='▶';
+  closeModal();toast('↩ Backing track dissocié');
+};
 
 mp3Audio.addEventListener('timeupdate',()=>{
   if(mp3Audio.duration){
