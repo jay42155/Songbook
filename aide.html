@@ -17,8 +17,8 @@ body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);line-h
 .hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary2) 100%);color:var(--cream);padding:40px 24px 36px;text-align:center}
 .hero h2{font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:10px}
 .hero p{font-size:14px;opacity:.8;max-width:520px;margin:0 auto 20px}
-.hero-chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
-.chip{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.hero-chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.chip{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 12px;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .15s}
 .chip:hover{background:rgba(255,255,255,.28)}
 .content{max-width:780px;margin:0 auto;padding:28px 20px 60px}
 .section{margin-bottom:48px;scroll-margin-top:70px}
@@ -72,6 +72,7 @@ code{background:var(--chord-bg);color:var(--chord);font-family:'Source Code Pro'
 .ph-toolbar{background:var(--bg2);padding:4px 6px;display:flex;gap:3px;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap}
 .ph-tool{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:3px 5px;font-size:7.5px;font-weight:700;color:var(--text2)}
 .ph-tool.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ph-tool.scroll-on{background:var(--green,#27ae60);color:#fff;border-color:var(--green,#27ae60)}
 .ph-transpose{display:flex;align-items:center;border:1px solid var(--border2);border-radius:4px;overflow:hidden}
 .ph-tb{background:var(--surface);padding:3px 5px;font-size:9px;font-weight:700;color:var(--text2)}
 .ph-tv{background:var(--bg2);padding:3px 4px;font-size:8px;font-weight:700;border-left:1px solid var(--border2);border-right:1px solid var(--border2)}
@@ -81,6 +82,8 @@ code{background:var(--chord-bg);color:var(--chord);font-family:'Source Code Pro'
 .ph-content{padding:8px 9px;font-family:'Source Code Pro',monospace;font-size:9.5px;line-height:1.85;color:var(--text);font-weight:700}
 .ph-chord{color:var(--chord);font-weight:600;background:var(--chord-bg);border-radius:2px;padding:0 2px;font-size:.8em;vertical-align:super;line-height:0}
 .ph-section-lbl{color:var(--accent);font-weight:700;font-size:8px;text-transform:uppercase;letter-spacing:.06em;display:block;margin-top:5px;margin-bottom:1px}
+.ph-speed-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:4px 8px;display:flex;align-items:center;gap:6px;font-size:8px;color:var(--text3)}
+.ph-speed-bar input{flex:1;height:3px;accent-color:var(--accent)}
 .ph-sett-section{background:var(--bg2);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:4px 8px;border-bottom:1px solid var(--border)}
 .ph-sett-row{display:flex;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border);gap:6px;background:var(--surface)}
 .ph-row-icon{font-size:12px;width:16px;text-align:center}
@@ -109,36 +112,40 @@ code{background:var(--chord-bg);color:var(--chord);font-family:'Source Code Pro'
 .ph-modal-input{width:100%;background:var(--bg2);border:1px solid var(--accent);border-radius:4px;padding:5px 7px;font-size:9.5px;text-align:center;color:var(--text);margin-bottom:7px}
 .ph-modal-btns{display:flex;justify-content:flex-end;gap:4px}
 .ph-modal-btn{background:var(--primary);color:var(--cream);border:none;border-radius:4px;padding:4px 10px;font-size:9px;font-weight:700}
-.ph-ctx{background:var(--surface);border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin:7px}
+.ph-ctx{background:var(--surface);border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin:6px}
 .ph-ctx-item{display:flex;align-items:center;gap:7px;padding:7px 9px;font-size:9.5px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border)}
 .ph-ctx-item:last-child{border-bottom:none;color:var(--red)}
 .ph-ctx-icon{font-size:11px;width:14px;text-align:center}
 .ph-font-group{display:flex;border:1px solid var(--border2);border-radius:4px;overflow:hidden;margin-left:auto}
 .ph-fb{background:var(--surface);padding:3px 5px;font-size:8.5px;font-weight:700;color:var(--text2);border-right:1px solid var(--border2)}
 .ph-fb:last-child{border-right:none}
-.ph-bottom-bar{display:flex;align-items:center;border-top:1px solid var(--border);height:36px;background:var(--bg2)}
-.ph-bb-btn{background:none;border:none;border-right:1px solid var(--border);color:var(--text3);font-size:14px;padding:0 10px;height:100%;cursor:pointer}
+.ph-bottom-bar{display:flex;align-items:center;border-top:1px solid var(--border);height:34px;background:var(--bg2)}
+.ph-bb-btn{background:none;border:none;border-right:1px solid var(--border);color:var(--text3);font-size:14px;padding:0 10px;height:100%}
 .ph-bb-btn.accent{color:var(--accent)}
 .ph-bb-fill{flex:1}
-.ph-bb-right{background:var(--primary);border:none;border-left:1px solid var(--border);color:var(--cream);font-size:14px;padding:0 10px;height:100%}
-.ph-mp3{display:flex;align-items:center;gap:7px;padding:6px 9px;background:var(--bg2);border-top:1px solid var(--border)}
-.ph-mp3-play{background:var(--accent);border:none;border-radius:50%;width:28px;height:28px;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ph-mp3{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--bg2);border-top:1px solid var(--border)}
+.ph-mp3-play{background:var(--accent);border:none;border-radius:50%;width:24px;height:24px;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ph-mp3-info{flex:1;min-width:0}
-.ph-mp3-title{font-size:8.5px;font-weight:700;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ph-mp3-bar{width:100%;height:3px;background:var(--bg3);border-radius:2px;margin-top:3px;position:relative}
-.ph-mp3-prog{width:35%;height:100%;background:var(--accent);border-radius:2px}
+.ph-mp3-title{font-size:8px;font-weight:700;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-mp3-bar{width:100%;height:3px;background:var(--bg3);border-radius:2px;margin-top:2px}
+.ph-mp3-prog{height:100%;background:var(--accent);border-radius:2px}
+.ph-sl-choice{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;margin:6px}
+.ph-sl-choice-item{display:flex;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border);font-size:9px;gap:6px;color:var(--text)}
+.ph-sl-choice-item:last-child{border-bottom:none}
+.ph-sl-choice-name{flex:1;font-weight:700}
+.ph-sl-choice-count{color:var(--text3);font-size:8px}
 .ph-dark{background:#1a1a1a}
 .ph-dark .ph-header{background:#0d0d0d}
-.ph-dark .ph-nav{background:#1a1a1a}
 .ph-dark .ph-sett-section{background:#242424;color:#8B7B6A}
 .ph-dark .ph-sett-row{background:#1e1e1e;border-color:rgba(200,184,154,0.12)}
 .ph-dark .ph-row-label{color:#F0E4CC}
-.ph-dark .ph-row-sub{color:#8B7B6A}
-.ph-dark .ph-search{background:#242424}
-.ph-dark .ph-search-in{background:#1e1e1e;color:#8B7B6A}
-.ph-dark .ph-song{background:#1e1e1e;border-color:rgba(200,184,154,0.12)}
-.ph-dark .ph-song-t{color:#F0E4CC}
-/* TABLE */
+/* AirTurn steps spéciaux */
+.airturn-step{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;margin:10px 0;display:flex;gap:12px;align-items:flex-start}
+.airturn-badge{background:var(--primary);color:var(--cream);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.airturn-badge.blue{background:#1565C0}
+.airturn-badge.green{background:#27ae60}
+.airturn-badge.orange{background:var(--accent)}
+.key-chip{display:inline-block;background:var(--primary);color:var(--cream);border-radius:5px;padding:3px 10px;font-family:'Source Code Pro',monospace;font-size:12px;font-weight:700;margin:2px 3px}
 .table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
 .table th{background:var(--primary);color:var(--cream);padding:8px 12px;text-align:left;font-weight:700}
 .table td{padding:8px 12px;border-bottom:1px solid var(--border)}
@@ -158,6 +165,7 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
     <button class="nav-link" onclick="go('s5')">⑤ Setlist</button>
     <button class="nav-link" onclick="go('s6')">⑥ Outils</button>
     <button class="nav-link" onclick="go('s7')">⑦ Paramètres</button>
+    <button class="nav-link" onclick="go('s8')">⑧ AirTurn</button>
   </div>
 </nav>
 <div class="hero">
@@ -165,17 +173,18 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
   <p>Tout ce qu'il faut savoir pour gérer vos chansons, accords et setlists — pas à pas, avec illustrations.</p>
   <div class="hero-chips">
     <span class="chip" onclick="go('s1')">① Premier démarrage</span>
-    <span class="chip" onclick="go('s2')">② Importer des chansons</span>
-    <span class="chip" onclick="go('s3')">③ Lire &amp; transposer</span>
-    <span class="chip" onclick="go('s4')">④ Créer &amp; éditer</span>
+    <span class="chip" onclick="go('s2')">② Importer</span>
+    <span class="chip" onclick="go('s3')">③ Lire &amp; outils</span>
+    <span class="chip" onclick="go('s4')">④ Éditer</span>
     <span class="chip" onclick="go('s5')">⑤ Setlists</span>
     <span class="chip" onclick="go('s6')">⑥ Outils musicaux</span>
     <span class="chip" onclick="go('s7')">⑦ Paramètres</span>
+    <span class="chip" onclick="go('s8')">⑧ AirTurn Bluetooth</span>
   </div>
 </div>
 <div class="content">
 
-<!-- ══════ S1 PREMIER DÉMARRAGE ══════ -->
+<!-- ══════ S1 ══════ -->
 <div class="section" id="s1">
   <div class="section-header"><div class="section-num">1</div><div class="section-icon">👋</div><div class="section-title">Premier démarrage</div></div>
   <div class="steps">
@@ -188,9 +197,9 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
     <div><div class="phone"><div class="phone-screen">
       <div class="ph-header"><div class="ph-h1">🎸 JAY's Songbook</div><div class="ph-btn">⚙️</div></div>
       <div class="ph-modal-wrap"><div class="ph-modal">
-        <div style="text-align:center;font-size:24px;margin-bottom:5px">👋</div>
+        <div style="text-align:center;font-size:22px;margin-bottom:5px">👋</div>
         <div class="ph-modal-title" style="text-align:center">Bienvenue !</div>
-        <div class="ph-modal-desc" style="text-align:center">Comment souhaitez-vous appeler votre Songbook ?</div>
+        <div class="ph-modal-desc" style="text-align:center">Comment appeler votre Songbook ?</div>
         <div class="ph-modal-input">Bernard</div>
         <div class="ph-modal-btns"><div class="ph-modal-btn">Valider</div></div>
       </div></div>
@@ -198,18 +207,18 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
     <div><div class="phone"><div class="phone-screen">
       <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
       <div class="ph-nav"><div class="ph-tab active">📚 Bibliothèque</div><div class="ph-tab">🎵 Setlist</div></div>
-      <div style="padding:18px 10px;text-align:center;color:var(--text3);font-size:9.5px"><div style="font-size:30px;opacity:.3;margin-bottom:6px">🎵</div>Bibliothèque vide.<br>Importez vos premières chansons !</div>
-    </div></div><div class="phone-label">Le titre se met à jour instantanément</div></div>
+      <div style="padding:18px 10px;text-align:center;color:var(--text3);font-size:9.5px"><div style="font-size:28px;opacity:.3;margin-bottom:5px">🎵</div>Bibliothèque vide.</div>
+    </div></div><div class="phone-label">Titre mis à jour instantanément</div></div>
   </div>
   <div class="steps">
     <div class="step"><div class="step-num">2</div><div class="step-body">
       <div class="step-title">Changer de nom plus tard</div>
-      <div class="step-desc">Allez dans <strong>Paramètres ⚙️</strong> → <em>Mon profil</em> → <em>Nom affiché</em>. Vous pouvez modifier ou effacer votre nom à tout moment.</div>
+      <div class="step-desc">Allez dans <strong>Paramètres ⚙️</strong> → <em>Mon profil</em> → <em>Nom affiché</em>.</div>
     </div></div>
   </div>
 </div>
 
-<!-- ══════ S2 IMPORTER ══════ -->
+<!-- ══════ S2 ══════ -->
 <div class="section" id="s2">
   <div class="section-header"><div class="section-num">2</div><div class="section-icon">📥</div><div class="section-title">Importer des chansons</div></div>
   <div class="highlight">Il existe <strong>6 façons d'importer</strong> du contenu. Toutes s'ouvrent via le bouton <strong style="color:var(--accent);font-size:15px">＋</strong> en haut à droite de la bibliothèque.</div>
@@ -234,29 +243,24 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
   <div class="steps">
     <div class="step"><div class="step-num">1</div><div class="step-body">
       <div class="step-title">📁 Fichier TXT, PDF ou HTML</div>
-      <div class="step-desc">Appuyez sur <strong>📁 Fichier</strong>. Choisissez un ou plusieurs fichiers. L'app <strong>convertit automatiquement les accords</strong> au format ChordPro si besoin (lignes séparées ou parenthèses).</div>
-      <div class="tip">💡 La conversion automatique reconnaît le format <code>Am G F C</code> sur une ligne séparée, ou les accords entre <code>(parenthèses)</code>, et les intègre directement dans les paroles.</div>
+      <div class="step-desc">Appuyez sur <strong>📁 Fichier</strong>. L'app <strong>convertit automatiquement les accords</strong> au format ChordPro si besoin (lignes séparées ou parenthèses).</div>
+      <div class="tip">💡 La conversion reconnaît <code>Am G F C</code> sur une ligne séparée, ou <code>(Am)</code> entre parenthèses.</div>
     </div></div>
     <div class="step"><div class="step-num">2</div><div class="step-body">
       <div class="step-title">🖼️ Image ou 📷 Photo</div>
-      <div class="step-desc">Appuyez sur <strong>🖼️ Image</strong>. Une fenêtre propose :</div>
-      <div class="infobox" style="margin-top:8px">
-        <div class="infobox-row"><span style="font-size:16px">📷</span><div><strong>Prendre une photo</strong> — ouvre l'appareil photo directement (idéal pour photographier une partition papier)</div></div>
-        <div class="infobox-row"><span style="font-size:16px">🖼️</span><div><strong>Choisir depuis la galerie</strong> — sélection multiple possible</div></div>
-      </div>
+      <div class="step-desc">Appuyez sur <strong>🖼️ Image</strong> → choisissez <strong>📷 Prendre une photo</strong> (ouvre l'appareil photo) ou <strong>🖼️ Choisir depuis la galerie</strong>.</div>
     </div></div>
     <div class="step"><div class="step-num">3</div><div class="step-body">
       <div class="step-title">🎼 Partition MusicXML</div>
-      <div class="step-desc">Appuyez sur <strong>🎼 Partition</strong>. Sélectionnez un fichier <code>.xml</code> ou <code>.mxl</code> exporté depuis MuseScore, Finale, Sibelius… La partition apparaît dans la bibliothèque et peut être ajoutée à une setlist. En l'ouvrant, la visionneuse <strong>score-viewer</strong> s'ouvre automatiquement.</div>
-      <div class="tip">💡 <strong>score-viewer.html</strong> doit être dans le même dossier que index.html. Il offre zoom, navigation par pages et curseur de lecture.</div>
+      <div class="step-desc">Sélectionnez un fichier <code>.xml</code> ou <code>.mxl</code> exporté depuis MuseScore, Finale, Sibelius… La partition s'intègre dans la bibliothèque. En l'ouvrant, <strong>score-viewer.html</strong> se lance automatiquement.</div>
     </div></div>
     <div class="step"><div class="step-num">4</div><div class="step-body">
       <div class="step-title">📋 Coller du texte</div>
-      <div class="step-desc">Appuyez sur <strong>📋 Coller texte</strong>. Saisissez le titre, collez vos paroles/accords, puis <strong>Importer</strong>. La conversion des accords est automatique.</div>
+      <div class="step-desc">Saisissez le titre, collez vos paroles/accords, appuyez sur <strong>Importer</strong>. Conversion automatique des accords.</div>
     </div></div>
     <div class="step"><div class="step-num">5</div><div class="step-body">
-      <div class="step-title">🔍 Rechercher en ligne puis coller</div>
-      <div class="step-desc">Dans <strong>Paramètres ⚙️</strong> → <em>Rechercher des paroles en ligne</em> : Genius, Ultimate Guitar, Musixmatch, La Boîte à Chansons. Copiez le texte trouvé, revenez → <strong>📋 Coller texte</strong>.</div>
+      <div class="step-title">🔍 Rechercher en ligne</div>
+      <div class="step-desc"><strong>Paramètres ⚙️</strong> → <em>Rechercher des paroles en ligne</em> : Genius, Ultimate Guitar, Musixmatch, La Boîte à Chansons. Copiez, revenez → <strong>📋 Coller texte</strong>.</div>
     </div></div>
     <div class="step"><div class="step-num">6</div><div class="step-body">
       <div class="step-title">✏️ Nouvelle chanson vide</div>
@@ -265,95 +269,96 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
   </div>
 </div>
 
-<!-- ══════ S3 LIRE & TRANSPOSER ══════ -->
+<!-- ══════ S3 ══════ -->
 <div class="section" id="s3">
-  <div class="section-header"><div class="section-num">3</div><div class="section-icon">🎸</div><div class="section-title">Lire, transposer &amp; métronome</div></div>
+  <div class="section-header"><div class="section-num">3</div><div class="section-icon">🎸</div><div class="section-title">Lire, transposer &amp; outils de lecture</div></div>
   <div class="steps">
     <div class="step"><div class="step-num">1</div><div class="step-body">
       <div class="step-title">Ouvrir une chanson</div>
-      <div class="step-desc">Dans la bibliothèque, appuyez sur le <strong>titre</strong> d'une chanson. Elle s'ouvre en plein écran avec une barre d'outils complète.</div>
+      <div class="step-desc">Dans la bibliothèque, appuyez sur le <strong>titre</strong> d'une chanson. Elle s'ouvre en plein écran en mode lecture avec la barre d'outils complète.</div>
     </div></div>
   </div>
   <div class="mockup-wrap">
     <div><div class="phone"><div class="phone-screen">
-      <div class="ph-presenter-h"><div class="ph-btn" style="font-size:10px">✕</div><div class="ph-pres-title">Hier encore — Ch. Aznavour</div><div class="ph-btn" style="font-size:10px">✏️</div></div>
+      <div class="ph-presenter-h"><div class="ph-btn" style="font-size:9px">✕</div><div class="ph-pres-title">Hier encore — Ch. Aznavour</div><div class="ph-btn" style="font-size:9px">✏️</div></div>
       <div class="ph-toolbar">
         <div class="ph-transpose"><div class="ph-tb">♭</div><div class="ph-tv">+2</div><div class="ph-tb">♯</div></div>
         <div class="ph-tool active">🎸</div>
         <div class="ph-tool">𝐴</div>
-        <div class="ph-tempo"><div class="ph-tb">−</div><div class="ph-tv" style="min-width:28px;font-size:7.5px">♩80</div><div class="ph-tb">+</div><div class="ph-metro-btn running">■</div></div>
+        <div class="ph-tempo"><div class="ph-tb">−</div><div class="ph-tv" style="min-width:26px;font-size:7px">♩80</div><div class="ph-tb">+</div><div class="ph-metro-btn running">■</div></div>
+        <div class="ph-tool scroll-on">⏩</div>
         <div class="ph-font-group"><div class="ph-fb">A−</div><div class="ph-fb">A+</div></div>
       </div>
+      <div class="ph-speed-bar">🐢<input type="range" value="4" min="1" max="10" disabled>🐇 <span style="color:var(--accent);font-weight:700">4</span></div>
       <div class="ph-content">
         <span class="ph-section-lbl">Couplet</span>
         <span class="ph-chord">Bm</span>Hier encore<br>j'avais <span class="ph-chord">A</span>vingt ans<br>Je <span class="ph-chord">G</span>caressais le <span class="ph-chord">D</span>temps
       </div>
-      <div class="ph-mp3">
-        <div class="ph-mp3-play">▶</div>
-        <div class="ph-mp3-info">
-          <div class="ph-mp3-title">Hier encore - backing track.mp3</div>
-          <div class="ph-mp3-bar"><div class="ph-mp3-prog"></div></div>
-        </div>
-        <span style="font-size:11px;color:var(--text3)">⏹</span>
-        <span style="font-size:11px;color:var(--text3)">📂</span>
-      </div>
-      <div class="ph-bottom-bar">
-        <div class="ph-bb-btn accent">🎵</div>
-        <div class="ph-bb-fill"></div>
-        <div class="ph-bb-right">🎛</div>
-      </div>
-    </div></div><div class="phone-label">Mode lecture complet</div></div>
+      <div class="ph-bottom-bar"><div class="ph-bb-btn accent">🎵</div><div class="ph-bb-fill"></div></div>
+    </div></div><div class="phone-label">Défilement auto actif (⏩ vert)</div></div>
   </div>
   <div class="steps">
     <div class="step"><div class="step-num">2</div><div class="step-body">
       <div class="step-title">Transposer les accords (♭ / ♯)</div>
       <div class="step-desc">Appuyez sur <strong>♯</strong> pour monter d'un demi-ton, <strong>♭</strong> pour descendre. Tous les accords se recalculent instantanément.</div>
-      <div class="tip">💡 Exemple : 2 × ♯ transpose Am → Bm, G → A… automatiquement.</div>
+      <div class="tip">💡 2 × ♯ transpose Am → Bm, G → A… automatiquement.</div>
     </div></div>
     <div class="step"><div class="step-num">3</div><div class="step-body">
       <div class="step-title">Masquer les accords — bouton 🎸</div>
-      <div class="step-desc">Appuyez sur <strong>🎸 Accords</strong> pour basculer en mode paroles seules. Pratique pour les chanteurs.</div>
+      <div class="step-desc">Bascule en affichage paroles seules. Pratique pour les chanteurs.</div>
     </div></div>
     <div class="step"><div class="step-num">4</div><div class="step-body">
       <div class="step-title">Changer la police — bouton 𝐴</div>
-      <div class="step-desc">Bascule entre deux polices : <strong style="font-family:'Source Code Pro',monospace">Mono</strong> (Source Code Pro, défaut) et <strong style="font-family:'Playfair Display',serif">Serif</strong> (Playfair Display, plus élégant). Le bouton s'allume en orange quand Serif est actif. Les accords restent toujours en Mono.</div>
+      <div class="step-desc">Bascule entre <strong style="font-family:'Source Code Pro',monospace">Mono</strong> (défaut) et <strong style="font-family:'Playfair Display',serif">Serif</strong> (Playfair Display). Le bouton s'allume en orange quand Serif est actif.</div>
     </div></div>
     <div class="step"><div class="step-num">5</div><div class="step-body">
       <div class="step-title">Taille du texte (A− / A+)</div>
-      <div class="step-desc"><strong>A+</strong> pour agrandir, <strong>A−</strong> pour réduire. Utile si vous lisez à distance depuis la scène.</div>
+      <div class="step-desc"><strong>A+</strong> pour agrandir, <strong>A−</strong> pour réduire.</div>
     </div></div>
     <div class="step"><div class="step-num">6</div><div class="step-body">
       <div class="step-title">Métronome ♩ — tempo et tap</div>
-      <div class="step-desc">La barre d'outils affiche le tempo en BPM.</div>
-      <div class="infobox" style="margin-top:8px">
-        <div class="infobox-row"><code>−</code> / <code>+</code><span style="margin-left:4px">Ajuster le tempo par pas de 2 BPM (20 à 300)</span></div>
-        <div class="infobox-row"><code>▶</code> / <code>■</code><span style="margin-left:4px">Démarrer / arrêter le métronome</span></div>
-        <div class="infobox-row"><code>♩80</code><span style="margin-left:4px">Appuyer dessus → modale avec saisie manuelle et <strong>Tap Tempo</strong></span></div>
+      <div class="infobox" style="margin-top:6px">
+        <div class="infobox-row"><code>−</code>/<code>+</code><span style="margin-left:4px">Ajuster le tempo (20 à 300 BPM)</span></div>
+        <div class="infobox-row"><code>▶</code>/<code>■</code><span style="margin-left:4px">Démarrer / arrêter</span></div>
+        <div class="infobox-row"><code>♩80</code><span style="margin-left:4px">Cliquer → modale saisie manuelle + <strong>Tap Tempo</strong></span></div>
       </div>
-      <div class="tip">💡 <strong>Tap Tempo :</strong> tapez plusieurs fois sur le bouton TAP au rythme voulu, le BPM se calcule automatiquement sur les 8 derniers taps. Son bois avec accent sur le temps 1 (4/4). S'arrête à la fermeture de la chanson.</div>
+      <div class="tip">💡 <strong>Tap Tempo :</strong> tapez plusieurs fois sur TAP au rythme voulu. BPM calculé sur les 8 derniers taps. Son bois avec accent sur le temps 1.</div>
     </div></div>
     <div class="step"><div class="step-num">7</div><div class="step-body">
+      <div class="step-title">⏩ Défilement automatique</div>
+      <div class="step-desc">Appuyez sur le bouton <strong>⏩</strong> dans la toolbar pour démarrer le défilement automatique. Le bouton devient <strong>⏸</strong> (vert) et une barre de vitesse apparaît juste en dessous.</div>
+      <div class="infobox" style="margin-top:6px">
+        <div class="infobox-row"><span>⏩ → ⏸</span><div>Démarrer / mettre en pause le défilement</div></div>
+        <div class="infobox-row"><span>🐢 ——— 🐇</span><div>Curseur de vitesse de 1 (très lent) à 10 (rapide) — réglable en cours de défilement</div></div>
+        <div class="infobox-row"><span>↓ auto</span><div>S'arrête automatiquement en bas de page, à la fermeture et au changement de chanson</div></div>
+      </div>
+    </div></div>
+    <div class="step"><div class="step-num">8</div><div class="step-body">
       <div class="step-title">Navigation concert ◀ ▶</div>
-      <div class="step-desc">Si vous avez ouvert depuis une <strong>setlist</strong>, une barre ◀ / ▶ apparaît en bas au centre. Naviguez entre les chansons sans repasser par la liste.</div>
+      <div class="step-desc">Si ouvert depuis une setlist, une barre ◀/▶ s'affiche en bas. Naviguez entre les morceaux sans repasser par la liste.</div>
+    </div></div>
+    <div class="step"><div class="step-num">9</div><div class="step-body">
+      <div class="step-title">😴 Anti-veille automatique</div>
+      <div class="step-desc">Dès qu'une chanson est ouverte en mode lecture, l'écran reste allumé automatiquement (Wake Lock). Il se désactive à la fermeture de la chanson. Aucune configuration nécessaire.</div>
     </div></div>
   </div>
 </div>
 
-<!-- ══════ S4 CRÉER & ÉDITER ══════ -->
+<!-- ══════ S4 ══════ -->
 <div class="section" id="s4">
   <div class="section-header"><div class="section-num">4</div><div class="section-icon">✏️</div><div class="section-title">Créer &amp; éditer une chanson</div></div>
   <div class="steps">
     <div class="step"><div class="step-num">1</div><div class="step-body">
       <div class="step-title">Accéder à l'éditeur</div>
-      <div class="step-desc">Depuis la bibliothèque, appuyez sur <strong>⋮</strong> à côté d'une chanson → <strong>Éditer</strong>. Ou depuis le lecteur, appuyez sur <strong>✏️</strong> en haut à droite.</div>
+      <div class="step-desc">Depuis la bibliothèque, appuyez sur <strong>⋮</strong> → <strong>Éditer</strong>. Ou depuis le lecteur, appuyez sur <strong>✏️</strong> en haut à droite.</div>
     </div></div>
   </div>
   <div class="mockup-wrap">
     <div><div class="phone"><div class="phone-screen">
       <div class="ph-header" style="background:var(--primary2)">
-        <div class="ph-btn" style="font-size:10px;background:rgba(255,255,255,.1)">✕</div>
+        <div class="ph-btn" style="font-size:9px;background:rgba(255,255,255,.1)">✕</div>
         <div class="ph-h1">Éditer : Hier encore</div>
-        <button style="background:var(--primary);color:var(--cream);border:none;border-radius:4px;padding:3px 7px;font-size:8.5px;font-weight:700">💾 Sauver</button>
+        <button style="background:var(--primary);color:var(--cream);border:none;border-radius:4px;padding:3px 7px;font-size:8px;font-weight:700">💾 Sauver</button>
       </div>
       <div class="ph-editor-meta"><div class="ph-meta-in">Hier encore</div><div class="ph-meta-in" style="max-width:75px">Ch. Aznavour</div></div>
       <div style="background:var(--bg2);padding:3px 6px;display:flex;gap:3px;border-bottom:1px solid var(--border)">
@@ -362,165 +367,133 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
         <div style="background:var(--surface);border:1px solid var(--border2);border-radius:3px;padding:2px 4px;font-size:8px;font-weight:700;color:var(--text2)"><u>S</u></div>
       </div>
       <div class="ph-palette"><div class="ph-ctag">Am</div><div class="ph-ctag">G</div><div class="ph-ctag">F</div><div class="ph-ctag">C</div><div class="ph-stag">[Couplet]</div><div class="ph-stag">[Refrain]</div></div>
-      <div class="ph-editor-area"><span style="color:var(--accent);font-size:7.5px">[Couplet]</span><br><span style="color:var(--chord)">[Am]</span>Hier encore<br>j'avais <span style="color:var(--chord)">[G]</span>vingt ans<br>Je <span style="color:var(--chord)">[F]</span>caressais le <span style="color:var(--chord)">[C]</span>temps</div>
+      <div class="ph-editor-area"><span style="color:var(--accent);font-size:7.5px">[Couplet]</span><br><span style="color:var(--chord)">[Am]</span>Hier encore<br>j'avais <span style="color:var(--chord)">[G]</span>vingt ans</div>
     </div></div><div class="phone-label">L'éditeur complet</div></div>
-    <div><div class="phone"><div class="phone-screen">
-      <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
-      <div class="ph-nav"><div class="ph-tab active">📚 Bibliothèque</div><div class="ph-tab">🎵 Setlist</div></div>
-      <div class="ph-search"><div class="ph-search-in">Rechercher…</div><div class="ph-add">＋</div></div>
-      <div class="ph-song"><div class="ph-avatar">H</div><div class="ph-song-info"><div class="ph-song-t">Hier encore</div><div class="ph-song-a">Charles Aznavour</div></div><div class="ph-dots" style="color:var(--accent)">⋮</div></div>
-      <div class="ph-ctx">
-        <div class="ph-ctx-item"><div class="ph-ctx-icon">👁</div>Ouvrir</div>
-        <div class="ph-ctx-item" style="background:var(--bg2);color:var(--primary)"><div class="ph-ctx-icon">✏️</div><strong>Éditer</strong></div>
-        <div class="ph-ctx-item"><div class="ph-ctx-icon">🎵</div>Ajouter à la setlist</div>
-        <div class="ph-ctx-item"><div class="ph-ctx-icon">📤</div>Exporter en TXT</div>
-        <div class="ph-ctx-item"><div class="ph-ctx-icon">🗑</div>Supprimer</div>
-      </div>
-    </div></div><div class="phone-label">Menu ⋮ → Éditer</div></div>
   </div>
   <div class="steps">
     <div class="step"><div class="step-num">2</div><div class="step-body">
       <div class="step-title">Insérer un accord avec la palette</div>
-      <div class="step-desc">Placez le curseur à l'endroit voulu dans le texte, puis appuyez sur l'accord dans la barre colorée. L'accord s'insère au format <code>[Am]</code>.</div>
+      <div class="step-desc">Placez le curseur dans le texte à l'endroit voulu, appuyez sur un accord dans la barre colorée. L'accord s'insère au format <code>[Am]</code>.</div>
       <div class="tip">💡 Format ChordPro : <code>[Am]Hier</code> <code>[G]encore</code> — accord entre crochets collé au mot qui suit.</div>
     </div></div>
     <div class="step"><div class="step-num">3</div><div class="step-body">
       <div class="step-title">Sections et mise en forme</div>
-      <div class="step-desc">La palette contient aussi <code>[Couplet]</code>, <code>[Refrain]</code>, <code>[Bridge]</code>… affichés en orange dans le lecteur. Mise en forme rapide : <code>**gras**</code>, <code>*italique*</code>, <code>__souligné__</code>.</div>
+      <div class="step-desc">La palette contient aussi <code>[Couplet]</code>, <code>[Refrain]</code>, <code>[Bridge]</code>… affichés en orange dans le lecteur. Mise en forme : <code>**gras**</code>, <code>*italique*</code>, <code>__souligné__</code>.</div>
     </div></div>
     <div class="step"><div class="step-num">4</div><div class="step-body">
       <div class="step-title">Sauvegarder</div>
-      <div class="step-desc">Appuyez sur <strong>💾 Sauver</strong> en haut à droite. La chanson est enregistrée localement sur votre appareil.</div>
+      <div class="step-desc">Appuyez sur <strong>💾 Sauver</strong>. La chanson est enregistrée localement sur votre appareil.</div>
     </div></div>
   </div>
 </div>
 
-<!-- ══════ S5 SETLISTS ══════ -->
+<!-- ══════ S5 ══════ -->
 <div class="section" id="s5">
   <div class="section-header"><div class="section-num">5</div><div class="section-icon">🎵</div><div class="section-title">Gérer les setlists</div></div>
-  <div class="highlight">Une <strong>setlist</strong> est une liste ordonnée de chansons pour un concert ou une répétition. Vous pouvez en créer autant que vous voulez.</div>
+  <div class="highlight">Une <strong>setlist</strong> est une liste ordonnée de chansons pour un concert. Vous pouvez en créer autant que vous voulez et naviguer entre elles en concert.</div>
   <div class="steps">
     <div class="step"><div class="step-num">1</div><div class="step-body">
-      <div class="step-title">Accéder aux setlists</div>
-      <div class="step-desc">Appuyez sur l'onglet <strong>🎵 Setlist</strong> en haut.</div>
+      <div class="step-title">Créer une nouvelle setlist</div>
+      <div class="step-desc">Onglet <strong>🎵 Setlist</strong> → <strong>＋ Nouvelle</strong>, saisissez un nom et validez.</div>
     </div></div>
     <div class="step"><div class="step-num">2</div><div class="step-body">
-      <div class="step-title">Créer une nouvelle setlist</div>
-      <div class="step-desc">Appuyez sur <strong>＋ Nouvelle</strong>, saisissez un nom et validez.</div>
-    </div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-body">
-      <div class="step-title">Ajouter une chanson ou une partition</div>
-      <div class="step-desc">Depuis la <strong>Bibliothèque</strong>, appuyez sur <strong>⋮</strong> → <strong>Ajouter à la setlist</strong>. Fonctionne aussi bien pour les chansons que les partitions MusicXML.</div>
-    </div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-body">
-      <div class="step-title">Réordonner par glisser-déposer</div>
-      <div class="step-desc">Maintenez le doigt sur <strong>⠿</strong> et glissez vers le haut ou le bas.</div>
-    </div></div>
-    <div class="step"><div class="step-num">5</div><div class="step-body">
-      <div class="step-title">Mode concert — navigation ◀ ▶</div>
-      <div class="step-desc">Ouvrez depuis la setlist : une barre ◀ / ▶ s'affiche en bas pour naviguer entre les morceaux sans repasser par la liste.</div>
+      <div class="step-title">Ajouter une chanson — choix de la setlist</div>
+      <div class="step-desc">Depuis la bibliothèque, appuyez sur <strong>⋮</strong> → <strong>Ajouter à la setlist</strong>. Une modale s'ouvre avec la liste de <strong>toutes vos setlists disponibles</strong>. Appuyez sur une setlist pour y ajouter la chanson (ou la retirer si déjà présente). Le bouton <strong>＋ Nouvelle setlist</strong> en bas permet d'en créer une à la volée.</div>
     </div></div>
   </div>
   <div class="mockup-wrap">
     <div><div class="phone"><div class="phone-screen">
       <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
-      <div class="ph-nav"><div class="ph-tab">📚 Bibliothèque</div><div class="ph-tab active">🎵 Setlist</div></div>
-      <div class="ph-sl-header"><div class="ph-sl-select">🎵 Concert 14 juillet</div><div class="ph-sl-btn">＋ Nouvelle</div><div class="ph-sl-btn" style="background:var(--red)">🗑</div></div>
-      <div class="ph-sl-item"><div class="ph-handle">⠿</div><div class="ph-sl-num">1</div><div class="ph-avatar">H</div><div class="ph-song-info"><div class="ph-song-t" style="font-size:9.5px">Hier encore</div><div class="ph-song-a">Ch. Aznavour</div></div><div class="ph-dots">⋮</div></div>
-      <div class="ph-sl-item"><div class="ph-handle">⠿</div><div class="ph-sl-num">2</div><div class="ph-avatar">🎼</div><div class="ph-song-info"><div class="ph-song-t" style="font-size:9.5px">Sonate en La</div><div class="ph-song-a">Partition MusicXML</div></div><div class="ph-dots">⋮</div></div>
-      <div class="ph-sl-item" style="opacity:.55"><div class="ph-handle">⠿</div><div class="ph-sl-num">3</div><div class="ph-avatar">H</div><div class="ph-song-info"><div class="ph-song-t" style="font-size:9.5px">Hallelujah</div><div class="ph-song-a">L. Cohen</div></div><div class="ph-dots">⋮</div></div>
-    </div></div><div class="phone-label">Setlist avec chanson + partition</div></div>
+      <div class="ph-nav"><div class="ph-tab active">📚 Bibliothèque</div><div class="ph-tab">🎵 Setlist</div></div>
+      <div class="ph-search"><div class="ph-search-in">Rechercher…</div><div class="ph-add">＋</div></div>
+      <div class="ph-song"><div class="ph-avatar">H</div><div class="ph-song-info"><div class="ph-song-t">Hier encore</div><div class="ph-song-a">Ch. Aznavour</div></div><div class="ph-dots" style="color:var(--accent)">⋮</div></div>
+      <div class="ph-ctx">
+        <div class="ph-ctx-item"><div class="ph-ctx-icon">👁</div>Ouvrir</div>
+        <div class="ph-ctx-item" style="background:var(--chord-bg);color:var(--primary)"><div class="ph-ctx-icon">🎵</div><strong>Ajouter à la setlist</strong></div>
+        <div class="ph-ctx-item"><div class="ph-ctx-icon">✏️</div>Éditer</div>
+      </div>
+    </div></div><div class="phone-label">Menu ⋮ → Ajouter à la setlist</div></div>
+    <div><div class="phone"><div class="phone-screen">
+      <div class="ph-header"><div class="ph-h1">🎸 Bernard's Songbook</div><div class="ph-btn">⚙️</div></div>
+      <div class="ph-modal-wrap"><div class="ph-modal">
+        <div class="ph-modal-title">🎵 Ajouter à une setlist</div>
+        <div class="ph-modal-desc">Chanson : <strong>Hier encore</strong></div>
+        <div class="ph-sl-choice">
+          <div class="ph-sl-choice-item"><span style="font-size:12px">🎵</span><div class="ph-sl-choice-name">Concert 14 juillet</div><span class="ph-sl-choice-count">3 chansons</span><span style="color:var(--accent);font-size:10px">+</span></div>
+          <div class="ph-sl-choice-item" style="background:var(--chord-bg)"><span style="font-size:12px">🎵</span><div class="ph-sl-choice-name">Répétition</div><span class="ph-sl-choice-count">déjà présente</span><span style="color:var(--accent);font-size:10px">✓</span></div>
+          <div class="ph-sl-choice-item"><span style="font-size:12px">🎵</span><div class="ph-sl-choice-name">Fête de la musique</div><span class="ph-sl-choice-count">1 chanson</span><span style="color:var(--accent);font-size:10px">+</span></div>
+        </div>
+        <div class="ph-modal-btns">
+          <div class="ph-modal-btn" style="background:var(--primary2);font-size:8px">＋ Nouvelle setlist</div>
+        </div>
+      </div></div>
+    </div></div><div class="phone-label">Choix de la setlist</div></div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-num">3</div><div class="step-body">
+      <div class="step-title">Réordonner par glisser-déposer</div>
+      <div class="step-desc">Dans la vue Setlist, maintenez le doigt sur <strong>⠿</strong> et glissez vers le haut ou le bas.</div>
+    </div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body">
+      <div class="step-title">Mode concert — navigation ◀ ▶</div>
+      <div class="step-desc">Ouvrez une chanson depuis la setlist : une barre ◀/▶ s'affiche en bas. Naviguez sans repasser par la liste.</div>
+    </div></div>
   </div>
 </div>
 
-<!-- ══════ S6 OUTILS MUSICAUX ══════ -->
+<!-- ══════ S6 ══════ -->
 <div class="section" id="s6">
   <div class="section-header"><div class="section-num">6</div><div class="section-icon">🎛</div><div class="section-title">Outils musicaux</div></div>
-
   <div class="steps">
     <div class="step"><div class="step-num">1</div><div class="step-body">
-      <div class="step-title">🎵 Player MP3 — fond sonore</div>
-      <div class="step-desc">En mode lecture d'une chanson, appuyez sur le bouton <strong>🎵</strong> en bas à gauche pour afficher le player MP3.</div>
-      <div class="infobox" style="margin-top:8px">
-        <div class="infobox-row"><span style="font-size:14px">📂</span><div>Charger un fichier MP3 depuis votre appareil</div></div>
-        <div class="infobox-row"><span style="font-size:14px">▶ / ⏸</span><div>Lecture / Pause</div></div>
-        <div class="infobox-row"><span style="font-size:14px">⏹</span><div>Stop et retour au début</div></div>
-        <div class="infobox-row"><span style="font-size:14px">━━</span><div>Barre de progression — appuyez pour vous déplacer</div></div>
+      <div class="step-title">🎵 Player MP3 — backing track persistant</div>
+      <div class="step-desc">En mode lecture, appuyez sur <strong>🎵</strong> en bas à gauche pour afficher le player. Appuyez sur <strong>📂</strong> pour charger un fichier audio.</div>
+      <div class="infobox" style="margin-top:6px">
+        <div class="infobox-row"><span style="font-size:13px">📂</span><div>Charger un MP3/WAV depuis l'appareil — le nom du fichier est <strong>mémorisé</strong> et associé à la chanson</div></div>
+        <div class="infobox-row"><span style="font-size:13px">▶ / ⏸</span><div>Lecture / Pause</div></div>
+        <div class="infobox-row"><span style="font-size:13px">⏹</span><div>Stop et retour au début</div></div>
+        <div class="infobox-row"><span style="font-size:13px">━━</span><div>Barre de progression cliquable</div></div>
       </div>
-      <div class="tip">💡 Le player s'arrête automatiquement à la fermeture de la chanson. Idéal pour jouer une séquence de fond ou un backing track pendant que vous chantez.</div>
+      <div class="tip">💡 <strong>Association persistante :</strong> une fois un MP3 chargé, son nom est enregistré dans la chanson. À la prochaine ouverture, le nom s'affiche en orange dans le player. Il suffit d'appuyer sur 📂 pour recharger le fichier depuis <code>/Download/Btracks/</code> sur Android. Double-appui sur le nom du fichier → modale d'informations et option de dissociation.</div>
+      <div class="warn">⚠️ Les fichiers audio (MP3, WAV…) sont volumineux et ne sont <strong>pas inclus</strong> dans la sauvegarde .json. Seul le nom du fichier est conservé. Organisez vos backing tracks dans le dossier <code>/Download/Btracks/</code> sur votre appareil.</div>
+    </div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">
+      <div class="step-title">🎼 Visionneuse de partitions (score-viewer)</div>
+      <div class="step-desc">En ouvrant une partition MusicXML depuis la bibliothèque, <strong>score-viewer.html</strong> s'ouvre automatiquement.</div>
+      <div class="infobox" style="margin-top:6px">
+        <div class="infobox-row"><span>🔍</span><div>Zoom +/− et ajustement à la largeur</div></div>
+        <div class="infobox-row"><span>📄</span><div>Navigation page par page ◀ ▶</div></div>
+        <div class="infobox-row"><span>🎯</span><div>Curseur de lecture note à note (touches ← →)</div></div>
+        <div class="infobox-row"><span>🌙</span><div>Mode sombre synchronisé avec l'app</div></div>
+      </div>
     </div></div>
   </div>
-
   <div class="mockup-wrap">
     <div><div class="phone"><div class="phone-screen">
-      <div class="ph-presenter-h"><div class="ph-btn" style="font-size:10px">✕</div><div class="ph-pres-title">Hier encore</div><div class="ph-btn" style="font-size:10px">✏️</div></div>
+      <div class="ph-presenter-h"><div class="ph-btn" style="font-size:9px">✕</div><div class="ph-pres-title">Hier encore</div><div class="ph-btn" style="font-size:9px">✏️</div></div>
       <div class="ph-toolbar">
         <div class="ph-transpose"><div class="ph-tb">♭</div><div class="ph-tv">0</div><div class="ph-tb">♯</div></div>
         <div class="ph-tool active">🎸</div><div class="ph-tool">𝐴</div>
-        <div class="ph-tempo"><div class="ph-tb">−</div><div class="ph-tv" style="min-width:28px;font-size:7.5px">♩95</div><div class="ph-tb">+</div><div class="ph-metro-btn">▶</div></div>
+        <div class="ph-tempo"><div class="ph-tb">−</div><div class="ph-tv" style="min-width:26px;font-size:7px">♩95</div><div class="ph-tb">+</div><div class="ph-metro-btn">▶</div></div>
+        <div class="ph-tool">⏩</div>
         <div class="ph-font-group"><div class="ph-fb">A−</div><div class="ph-fb">A+</div></div>
       </div>
-      <div class="ph-content" style="min-height:40px"><span class="ph-chord">Am</span>Hier encore j'avais…</div>
+      <div class="ph-content" style="min-height:36px"><span class="ph-chord">Am</span>Hier encore j'avais…</div>
       <div class="ph-mp3">
         <div class="ph-mp3-play">⏸</div>
         <div class="ph-mp3-info">
-          <div class="ph-mp3-title">backing-track-Am.mp3</div>
-          <div class="ph-mp3-bar"><div class="ph-mp3-prog" style="width:45%"></div></div>
+          <div class="ph-mp3-title" style="color:var(--accent)">backing-track-Am.mp3</div>
+          <div class="ph-mp3-bar"><div class="ph-mp3-prog" style="width:40%"></div></div>
         </div>
-        <span style="font-size:11px;color:var(--text3)">⏹</span>
-        <span style="font-size:11px;color:var(--text3)">📂</span>
+        <span style="font-size:10px;color:var(--text3)">⏹</span>
+        <span style="font-size:10px;color:var(--text3)">📂</span>
       </div>
-      <div class="ph-bottom-bar">
-        <div class="ph-bb-btn accent">🎵</div>
-        <div class="ph-bb-fill"></div>
-        <div class="ph-bb-right">🎛</div>
-      </div>
-    </div></div><div class="phone-label">Player MP3 actif</div></div>
-    <div><div class="phone"><div class="phone-screen">
-      <div class="ph-presenter-h"><div class="ph-btn" style="font-size:10px">✕</div><div class="ph-pres-title">Hier encore</div><div class="ph-btn" style="font-size:10px">✏️</div></div>
-      <div class="ph-toolbar"><div class="ph-transpose"><div class="ph-tb">♭</div><div class="ph-tv">0</div><div class="ph-tb">♯</div></div><div class="ph-tool active">🎸</div></div>
-      <div style="background:#1a2a1a;flex:1;padding:10px;display:flex;flex-direction:column;gap:6px">
-        <div style="background:#0d0d0d;border-radius:6px;padding:7px;color:#ccc;font-size:9px;font-weight:700;text-align:center">🎛 Table de mixage<br><span style="color:#888;font-weight:400">10.10.1.1</span></div>
-        <div style="background:#111;border-radius:6px;padding:6px;display:flex;gap:4px;align-items:center">
-          <div style="flex:1;background:#222;border-radius:3px;height:8px;position:relative"><div style="width:70%;height:100%;background:linear-gradient(90deg,#2a6;#8f4);border-radius:3px"></div></div>
-          <span style="color:#8f4;font-size:8px;font-weight:700">-6dB</span>
-        </div>
-        <div style="display:flex;gap:4px">
-          <div style="flex:1;background:#111;border-radius:4px;padding:4px;text-align:center;font-size:7.5px;color:#aaa">EQ</div>
-          <div style="flex:1;background:#111;border-radius:4px;padding:4px;text-align:center;font-size:7.5px;color:#aaa">COMP</div>
-          <div style="flex:1;background:#C8860A;border-radius:4px;padding:4px;text-align:center;font-size:7.5px;color:#fff;font-weight:700">FX</div>
-        </div>
-      </div>
-      <div class="ph-bottom-bar">
-        <div class="ph-bb-btn">🎵</div>
-        <div class="ph-bb-fill"></div>
-        <div class="ph-bb-right" style="background:var(--accent)">🎛</div>
-      </div>
-    </div></div><div class="phone-label">Table de mixage (iframe)</div></div>
-  </div>
-
-  <div class="steps">
-    <div class="step"><div class="step-num">2</div><div class="step-body">
-      <div class="step-title">🎛 Table de mixage (10.10.1.1)</div>
-      <div class="step-desc">En mode lecture, appuyez sur le bouton <strong>🎛</strong> en bas à droite (toujours visible). L'interface web de votre table de mixage s'ouvre dans une fenêtre flottante directement dans l'app, sans quitter la chanson.</div>
-      <div class="tip">💡 Appuyez sur <strong>✕</strong> en haut de la fenêtre mixage pour la fermer et revenir à la chanson.</div>
-    </div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-body">
-      <div class="step-title">🎼 Visionneuse de partitions (score-viewer)</div>
-      <div class="step-desc">En ouvrant une partition MusicXML depuis la bibliothèque ou une setlist, <strong>score-viewer.html</strong> s'ouvre automatiquement avec :</div>
-      <div class="infobox" style="margin-top:8px">
-        <div class="infobox-row"><span>🔍</span><div>Zoom + / − et ajustement automatique à la largeur</div></div>
-        <div class="infobox-row"><span>📄</span><div>Navigation page par page ◀ ▶</div></div>
-        <div class="infobox-row"><span>🎯</span><div>Curseur de lecture — se déplace note à note avec les touches ← →</div></div>
-        <div class="infobox-row"><span>📂</span><div>Ouvrir un autre fichier directement depuis la visionneuse</div></div>
-        <div class="infobox-row"><span>🌙</span><div>Mode sombre synchronisé avec l'app principale</div></div>
-      </div>
-      <div class="tip">💡 Glisser-déposer un fichier .xml ou .mxl directement dans la visionneuse fonctionne aussi.</div>
-    </div></div>
+      <div class="ph-bottom-bar"><div class="ph-bb-btn accent">🎵</div><div class="ph-bb-fill"></div></div>
+    </div></div><div class="phone-label">Backing track associé (en orange)</div></div>
   </div>
 </div>
 
-<!-- ══════ S7 PARAMÈTRES ══════ -->
+<!-- ══════ S7 ══════ -->
 <div class="section" id="s7">
   <div class="section-header"><div class="section-num">7</div><div class="section-icon">⚙️</div><div class="section-title">Paramètres</div></div>
   <div class="steps">
@@ -531,22 +504,20 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
   </div>
   <div class="mockup-wrap">
     <div><div class="phone"><div class="phone-screen">
-      <div class="ph-header"><div class="ph-btn" style="font-size:10px;background:rgba(255,255,255,.1)">✕</div><div class="ph-h1" style="margin-left:4px">Paramètres</div></div>
+      <div class="ph-header"><div class="ph-btn" style="font-size:9px;background:rgba(255,255,255,.1)">✕</div><div class="ph-h1" style="margin-left:4px">Paramètres</div></div>
       <div class="ph-sett-section">Langue / Language</div>
       <div class="ph-sett-row"><div class="ph-row-icon">🌐</div><div class="ph-row-info"><div class="ph-row-label">Langue de l'interface</div><div class="ph-row-sub">🇫🇷 Français</div></div><div class="ph-row-arrow">›</div></div>
       <div class="ph-sett-section">Affichage</div>
-      <div class="ph-sett-row"><div class="ph-row-icon">🌙</div><div class="ph-row-info"><div class="ph-row-label">Mode sombre</div><div class="ph-row-sub">Basculer thème clair / sombre</div></div><div class="ph-toggle"><div class="ph-toggle-knob"></div></div></div>
-      <div class="ph-sett-section">Sauvegarde &amp; Restauration</div>
-      <div class="ph-sett-row"><div class="ph-row-icon">📦</div><div class="ph-row-info"><div class="ph-row-label">Exporter sauvegarde</div><div class="ph-row-sub">Toutes vos chansons → .json</div></div><div class="ph-row-arrow">›</div></div>
+      <div class="ph-sett-row"><div class="ph-row-icon">🌙</div><div class="ph-row-info"><div class="ph-row-label">Mode sombre</div><div class="ph-row-sub">Thème clair / sombre</div></div><div class="ph-toggle"><div class="ph-toggle-knob"></div></div></div>
+      <div class="ph-sett-section">Sauvegarde</div>
+      <div class="ph-sett-row"><div class="ph-row-icon">📦</div><div class="ph-row-info"><div class="ph-row-label">Exporter sauvegarde</div><div class="ph-row-sub">Chansons + setlists → .json</div></div><div class="ph-row-arrow">›</div></div>
       <div class="ph-sett-row"><div class="ph-row-icon">✉️</div><div class="ph-row-info"><div class="ph-row-label">Envoyer par e-mail</div><div class="ph-row-sub">Ouvre votre appli mail</div></div><div class="ph-row-arrow">›</div></div>
       <div class="ph-sett-row"><div class="ph-row-icon">📥</div><div class="ph-row-info"><div class="ph-row-label">Importer sauvegarde</div><div class="ph-row-sub">Restaurer depuis .json</div></div><div class="ph-row-arrow">›</div></div>
-    </div></div><div class="phone-label">Paramètres (haut)</div></div>
+    </div></div><div class="phone-label">Paramètres</div></div>
     <div><div class="phone ph-dark"><div class="phone-screen ph-dark">
-      <div class="ph-header" style="background:#0d0d0d"><div class="ph-btn" style="font-size:10px;background:rgba(255,255,255,.1)">✕</div><div class="ph-h1" style="margin-left:4px;color:#C8B89A">Paramètres</div></div>
+      <div class="ph-header" style="background:#0d0d0d"><div class="ph-btn" style="font-size:9px;background:rgba(255,255,255,.1)">✕</div><div class="ph-h1" style="margin-left:4px;color:#C8B89A">Paramètres</div></div>
       <div class="ph-sett-section ph-dark">Mon profil</div>
       <div class="ph-sett-row ph-dark"><div class="ph-row-icon">👤</div><div class="ph-row-info"><div class="ph-row-label">Nom affiché</div><div class="ph-row-sub">Connecté en tant que Bernard</div></div><div class="ph-row-arrow">›</div></div>
-      <div class="ph-sett-section ph-dark">Rechercher en ligne</div>
-      <div class="ph-sett-row ph-dark"><div class="ph-row-icon">🎤</div><div class="ph-row-info"><div class="ph-row-label">Genius / Ultimate Guitar…</div><div class="ph-row-sub">Ouvre dans le navigateur</div></div><div class="ph-row-arrow">›</div></div>
       <div class="ph-sett-section ph-dark">Thème &amp; Couleurs</div>
       <div class="ph-sett-row ph-dark"><div class="ph-row-icon">🎨</div><div class="ph-row-info"><div class="ph-row-label">Thèmes prédéfinis</div><div class="ph-row-sub">Bois · Nuit · Nature · Océan…</div></div><div class="ph-row-arrow">›</div></div>
       <div class="ph-sett-section ph-dark">Aide</div>
@@ -557,17 +528,113 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
     <thead><tr><th>Option</th><th>Description</th></tr></thead>
     <tbody>
       <tr><td>🌐 Langue</td><td>8 langues : 🇫🇷 Français · 🇬🇧 English · 🇩🇪 Deutsch · 🇪🇸 Español · 🇮🇹 Italiano · 🇷🇺 Русский · 🇨🇳 中文 · 🇹🇭 ภาษาไทย</td></tr>
-      <tr><td>🌙 Mode sombre</td><td>Bascule entre thème clair (crème/brun) et sombre (anthracite/or). Mémorisé entre les sessions.</td></tr>
-      <tr><td>📦 Exporter sauvegarde</td><td>Crée un fichier <code>.json</code> avec toutes vos chansons, partitions et setlists. À faire régulièrement !</td></tr>
+      <tr><td>🌙 Mode sombre</td><td>Bascule thème clair (crème/brun) ↔ sombre (anthracite/or). Mémorisé entre les sessions.</td></tr>
+      <tr><td>📦 Exporter sauvegarde</td><td>Fichier <code>.json</code> avec toutes les chansons, partitions et setlists. Les fichiers audio sont exclus (trop lourds) — seul le nom est conservé.</td></tr>
       <tr><td>✉️ Envoyer par e-mail</td><td>Télécharge la sauvegarde et ouvre votre appli mail. Utile pour transférer sur un autre appareil.</td></tr>
-      <tr><td>📥 Importer sauvegarde</td><td>Restaure toutes vos données depuis un <code>.json</code> exporté. <strong>⚠️ Remplace les données actuelles.</strong></td></tr>
+      <tr><td>📥 Importer sauvegarde</td><td>Restaure toutes les données depuis un <code>.json</code>. <strong>⚠️ Remplace les données actuelles.</strong></td></tr>
       <tr><td>👤 Nom affiché</td><td>Modifier le prénom/pseudo dans le titre de l'app.</td></tr>
-      <tr><td>🎨 Thème &amp; Couleurs</td><td>6 thèmes prédéfinis (Bois, Nuit, Nature, Océan, Désert, Sakura) + personnalisation couleur par couleur.</td></tr>
+      <tr><td>🎨 Thème &amp; Couleurs</td><td>6 thèmes prédéfinis + personnalisation couleur par couleur.</td></tr>
       <tr><td>🔍 Sites de paroles</td><td>Genius · Ultimate Guitar · Musixmatch · La Boîte à Chansons.</td></tr>
-      <tr><td>📖 Guide d'utilisation</td><td>Ouvre ce guide dans le navigateur.</td></tr>
+      <tr><td>📖 Guide</td><td>Ouvre ce guide dans le navigateur.</td></tr>
     </tbody>
   </table>
-  <div class="warn" style="margin-top:14px">⚠️ <strong>Attention :</strong> L'importation d'une sauvegarde remplace toutes vos données actuelles. Exportez d'abord si vous voulez conserver vos chansons.</div>
+</div>
+
+<!-- ══════ S8 AIRTURN ══════ -->
+<div class="section" id="s8">
+  <div class="section-header"><div class="section-num">8</div><div class="section-icon">🦶</div><div class="section-title">AirTurn Bluetooth — pédale de page</div></div>
+
+  <div class="highlight">
+    L'AirTurn est une pédale Bluetooth qui envoie des <strong>touches clavier</strong> à votre appareil. En la configurant en <strong>mode clavier HID</strong>, elle fonctionne nativement avec JAY's Songbook sur Android Chrome — sans aucune appli tierce.
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num" style="background:var(--accent)">!</div><div class="step-body">
+      <div class="step-title">Principe de fonctionnement</div>
+      <div class="step-desc">L'AirTurn se connecte en Bluetooth à votre tablette/smartphone comme un <strong>clavier sans fil</strong>. Chaque pédale envoie une touche clavier (par défaut : <span class="key-chip">↓</span> et <span class="key-chip">↑</span> ou <span class="key-chip">Page↓</span> et <span class="key-chip">Page↑</span>). JAY's Songbook utilise ces touches pour le défilement et la navigation entre chansons.</div>
+    </div></div>
+  </div>
+
+  <h3 style="font-family:'Playfair Display',serif;color:var(--primary);margin:20px 0 10px;font-size:1.1rem;border-bottom:1px solid var(--border);padding-bottom:6px">① Mettre l'AirTurn en mode clavier HID</h3>
+
+  <div class="highlight" style="margin-bottom:12px">
+    La procédure varie légèrement selon le modèle (BT-105, BT-200, BT-500, DIGIT…). Voici la méthode générale — consultez votre notice si votre modèle diffère.
+  </div>
+
+  <div class="airturn-step">
+    <div class="airturn-badge blue">Étape 1</div>
+    <div>
+      <strong>Allumer l'AirTurn en mode appairage</strong><br>
+      <span style="font-size:13px;color:var(--text2)">Maintenez le bouton d'alimentation <strong>5 à 7 secondes</strong> jusqu'à ce que le voyant clignote en bleu rapide (mode appairage). Sur certains modèles, il faut appuyer simultanément sur les deux pédales au démarrage.</span>
+    </div>
+  </div>
+
+  <div class="airturn-step">
+    <div class="airturn-badge blue">Étape 2</div>
+    <div>
+      <strong>Sélectionner le mode clavier (HID Keyboard)</strong><br>
+      <span style="font-size:13px;color:var(--text2)">Sur les modèles récents (BT-500, DIGIT), le mode se sélectionne avec une combinaison de touches <strong>avant</strong> l'appairage. Pour activer le mode clavier standard :</span>
+      <div style="margin-top:8px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;overflow:hidden">
+        <div style="padding:7px 12px;border-bottom:1px solid var(--border);font-size:12px"><strong>BT-105 / BT-200 :</strong> mode clavier par défaut, aucune manipulation nécessaire</div>
+        <div style="padding:7px 12px;border-bottom:1px solid var(--border);font-size:12px"><strong>BT-500 :</strong> au démarrage, appuyez sur la pédale <strong>1</strong> pour sélectionner "Mode 1 — HID Keyboard"</div>
+        <div style="padding:7px 12px;font-size:12px"><strong>DIGIT / autres :</strong> utilisez l'appli <strong>AirTurn Manager</strong> (gratuite sur Play Store) pour configurer le mode, puis débranchez l'appli — la configuration est mémorisée dans la pédale</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="airturn-step">
+    <div class="airturn-badge green">Étape 3</div>
+    <div>
+      <strong>Appairer avec votre tablette/smartphone Android</strong><br>
+      <span style="font-size:13px;color:var(--text2)">Allez dans <strong>Paramètres Android → Bluetooth</strong>, activez le Bluetooth et appuyez sur <em>"Rechercher des appareils"</em>. L'AirTurn apparaît sous un nom comme <em>"AirTurn BT-500"</em> ou <em>"ATFS-2"</em>. Appuyez dessus pour appairer — <strong>aucun code PIN</strong> n'est nécessaire en mode clavier.</span>
+    </div>
+  </div>
+
+  <div class="airturn-step">
+    <div class="airturn-badge green">Étape 4</div>
+    <div>
+      <strong>Vérifier la connexion</strong><br>
+      <span style="font-size:13px;color:var(--text2)">Une fois appairé, le voyant de l'AirTurn passe au <strong>bleu fixe</strong>. Ouvrez n'importe quelle appli de texte et appuyez sur une pédale — vous devez voir un caractère ou un défilement se produire.</span>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Playfair Display',serif;color:var(--primary);margin:20px 0 10px;font-size:1.1rem;border-bottom:1px solid var(--border);padding-bottom:6px">② Utilisation dans JAY's Songbook</h3>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body">
+      <div class="step-title">Défilement automatique</div>
+      <div class="step-desc">En mode lecture d'une chanson, les touches envoyées par l'AirTurn déclenchent :</div>
+      <div style="margin-top:8px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;overflow:hidden">
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;display:flex;align-items:center;gap:8px"><span class="key-chip">↓</span> ou <span class="key-chip">Page↓</span><span>Défiler vers le bas (pédale droite / avant)</span></div>
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;display:flex;align-items:center;gap:8px"><span class="key-chip">↑</span> ou <span class="key-chip">Page↑</span><span>Défiler vers le haut (pédale gauche / arrière)</span></div>
+        <div style="padding:8px 12px;font-size:13px;display:flex;align-items:center;gap:8px"><span class="key-chip">→</span><span>Chanson suivante dans la setlist</span></div>
+      </div>
+      <div class="tip">💡 Si les touches ne correspondent pas, reconfigurez l'AirTurn avec <strong>AirTurn Manager</strong> pour qu'il envoie <span class="key-chip">↓</span>/<span class="key-chip">↑</span> ou <span class="key-chip">Page↓</span>/<span class="key-chip">Page↑</span>.</div>
+    </div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">
+      <div class="step-title">Navigation entre chansons (setlist)</div>
+      <div class="step-desc">Si vous avez ouvert une chanson depuis une setlist, les touches <span class="key-chip">→</span> (droite) et <span class="key-chip">←</span> (gauche) naviguent entre les chansons — équivalent aux boutons ▶ et ◀ à l'écran.</div>
+    </div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">
+      <div class="step-title">Reconnexion automatique</div>
+      <div class="step-desc">Une fois appairée, l'AirTurn se reconnecte automatiquement à votre appareil dès qu'elle est allumée et que le Bluetooth est activé. Pas besoin de re-appairer à chaque utilisation.</div>
+    </div></div>
+  </div>
+
+  <h3 style="font-family:'Playfair Display',serif;color:var(--primary);margin:20px 0 10px;font-size:1.1rem;border-bottom:1px solid var(--border);padding-bottom:6px">③ Dépannage</h3>
+
+  <table class="table">
+    <thead><tr><th>Problème</th><th>Solution</th></tr></thead>
+    <tbody>
+      <tr><td>L'AirTurn n'apparaît pas dans la liste Bluetooth</td><td>Vérifiez que la pédale est en mode appairage (voyant bleu clignotant rapide). Désactivez/réactivez le Bluetooth de la tablette.</td></tr>
+      <tr><td>La pédale est connectée mais ne fait rien</td><td>Vérifiez que l'AirTurn est en mode <strong>HID Keyboard</strong> et non en mode "media" ou "custom". Utilisez AirTurn Manager pour reconfigurer.</td></tr>
+      <tr><td>La pédale défile mais change de chanson au lieu de scroller</td><td>Reconfigurer les pédales pour envoyer <span class="key-chip">↓</span>/<span class="key-chip">↑</span> (scroll) plutôt que <span class="key-chip">→</span>/<span class="key-chip">←</span> (navigation).</td></tr>
+      <tr><td>La reconnexion échoue après une mise en veille</td><td>Sur Android, allez dans Paramètres Bluetooth → AirTurn → <em>"Oublier"</em>, puis re-appairez. Certains Android désactivent le Bluetooth HID en veille prolongée.</td></tr>
+      <tr><td>L'AirTurn fonctionne en Chrome desktop mais pas sur Android</td><td>Activez dans Chrome Android : <code>chrome://flags</code> → cherchez <em>"Bluetooth"</em> → activez <em>"Enable experimental Web Platform features"</em>.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip" style="margin-top:14px">💡 <strong>Modèles recommandés :</strong> BT-200 (2 pédales, simple et fiable) et BT-500 (4 pédales, plus polyvalent). Le BT-105 est plus ancien mais fonctionne parfaitement en mode clavier standard.</div>
 </div>
 
 </div>
