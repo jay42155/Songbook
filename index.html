@@ -524,6 +524,18 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title">Soutenir le projet</div>
+      <div class="settings-row" id="sett-tipeee">
+        <span class="row-icon">❤️</span>
+        <div class="row-info">
+          <div class="row-label">Soutenir sur Tipeee</div>
+          <div class="row-sub">JAY's Songbook est gratuit — un café aide à continuer 🎸</div>
+        </div>
+        <span class="row-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div class="settings-section-title">À propos</div>
       <div class="settings-row" style="cursor:default">
         <span class="row-icon">🎸</span>
@@ -1512,6 +1524,7 @@ document.getElementById('sett-genius').addEventListener('click',()=>openWebSearc
 document.getElementById('sett-musixmatch').addEventListener('click',()=>openWebSearch('https://www.musixmatch.com/search/','Musixmatch'));
 document.getElementById('sett-ug').addEventListener('click',()=>openWebSearch('https://www.ultimate-guitar.com/search.php?search_type=title&value=','Ultimate Guitar'));
 document.getElementById('sett-boite').addEventListener('click',()=>openWebSearch('https://www.boiteachansons.net/Recherche.php?rech=','La Boîte à Chansons'));
+document.getElementById('sett-tipeee').addEventListener('click',()=>window.open('https://fr.tipeee.com/songbook-reader-builder/','_blank'));
 
 // ── NAV ──
 document.querySelectorAll('.nav-tab').forEach(tab=>{
