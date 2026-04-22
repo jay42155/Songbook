@@ -814,6 +814,18 @@ function switchPresenterSong(id){
 
   updateSetlistNav();
 
+  // ── Détection robuste du contenu MusicXML ──
+  // Gère les cas : isScore+scoreXml (nouveau), scoreXml seul, XML brut dans content, et MXL base64
+  function _isXmlContent(s){
+    return typeof s==='string'&&(
+      s.trimStart().startsWith('<?xml')||
+      s.includes('<score-partwise')||
+      s.includes('<score-timewise')||
+      s.startsWith('[MXL_B64:') // .mxl compressé stocké en base64
+    );
+  }
+  const scoreXmlSrc = song.scoreXml || (_isXmlContent(song.content)?song.content:null);
+
   if(song.isPdf && song.pdfImages && song.pdfImages.length){
     // ── PDF : pages en images ──
     elPdf.innerHTML=song.pdfImages.map((src,i)=>
@@ -825,11 +837,12 @@ function switchPresenterSong(id){
     elPdf.style.display='flex';
     document.getElementById('btn-edit-presenter').style.display='none';
 
-  } else if(song.isScore && song.scoreXml){
+  } else if(scoreXmlSrc){
     // ── Partition MusicXML : rendu OSMD ──
+    // Fonctionne que isScore soit défini ou non, et quelle que soit la clé de stockage
     elScore.style.display='flex';
     document.getElementById('btn-edit-presenter').style.display='none';
-    renderScoreInline(song);
+    renderScoreInline({...song, scoreXml:scoreXmlSrc});
 
   } else {
     // ── Texte / accords ──
@@ -872,19 +885,32 @@ async function renderScoreInline(song){
       autoResize:true, drawTitle:true, drawComposer:true, backend:'svg',
       disableCursor:true,
     });
-    let xml=song.scoreXml||'';
-    // Supprime le DOCTYPE même s'il contient un subset interne [...] avec des >
-    xml=xml.replace(/<!DOCTYPE\b[^[>]*(?:\[[^\]]*\])?\s*>/i,'').trim();
-    // Assure la déclaration XML
-    if(!xml.startsWith('<?xml'))xml='<?xml version="1.0" encoding="UTF-8"?>'+xml;
-    // Convertit en Document pour un parsing fiable par OSMD
-    const parser=new DOMParser();
-    const xmlDoc=parser.parseFromString(xml,'application/xml');
-    const parseErr=xmlDoc.querySelector('parsererror');
-    if(parseErr)throw new Error('XML invalide : '+parseErr.textContent.slice(0,120));
-    // Attend que le container soit rendu dans le DOM avant d'initialiser OSMD
     await new Promise(r=>requestAnimationFrame(r));
-    await _readerOsmd.load(xmlDoc);
+
+    const raw=song.scoreXml||'';
+
+    if(raw.startsWith('[MXL_B64:')){
+      // ── Fichier .mxl (MusicXML compressé ZIP) stocké en base64 ──
+      // OSMD sait décompresser le MXL nativement via un ArrayBuffer
+      const b64=raw.slice(9,raw.lastIndexOf(']'));
+      const bin=atob(b64);
+      const bytes=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+      await _readerOsmd.load(bytes.buffer);
+    } else {
+      // ── Fichier .xml / .musicxml — texte XML brut ──
+      let xml=raw;
+      // Supprime le DOCTYPE même avec subset interne [...] contenant des >
+      xml=xml.replace(/<!DOCTYPE\b[^[>]*(?:\[[^\]]*\])?\s*>/i,'').trim();
+      if(!xml.startsWith('<?xml'))xml='<?xml version="1.0" encoding="UTF-8"?>'+xml;
+      // Valide via DOMParser avant de passer à OSMD
+      const parser=new DOMParser();
+      const xmlDoc=parser.parseFromString(xml,'application/xml');
+      const parseErr=xmlDoc.querySelector('parsererror');
+      if(parseErr)throw new Error('XML invalide : '+parseErr.textContent.slice(0,120));
+      await _readerOsmd.load(xmlDoc);
+    }
+
     _readerOsmd.render();
   }catch(err){
     container.innerHTML=`<div style="padding:14px;color:var(--red)">❌ Erreur rendu partition : ${esc(err.message)}</div>`;
@@ -1678,7 +1704,23 @@ document.getElementById('backup-input').addEventListener('change',async e=>{
     e.target.value='';return;
   }
   // ── 2. Application des données (erreurs séparées pour ne pas masquer le vrai problème) ──
-  songs=data.songs||[];setlists=data.setlists||[];
+  // Normalise les chansons MusicXML qui pourraient venir du converter avec une structure différente
+  function _normalizeSongs(raw){
+    return (raw||[]).map(s=>{
+      // Cas 1 : contenu XML ou MXL base64 stocké dans content (export converter ou ancien format)
+      if(!s.scoreXml && s.content && typeof s.content==='string' &&
+         (s.content.trimStart().startsWith('<?xml')||s.content.includes('<score-partwise')||
+          s.content.includes('<score-timewise')||s.content.startsWith('[MXL_B64:'))){
+        return{...s, scoreXml:s.content, content:'[SCORE_MUSICXML]', isScore:true};
+      }
+      // Cas 2 : scoreXml présent mais isScore absent
+      if(s.scoreXml && !s.isScore){
+        return{...s, isScore:true};
+      }
+      return s;
+    });
+  }
+  songs=_normalizeSongs(data.songs);setlists=data.setlists||[];
   activeSetlistId=data.activeSetlistId||setlists[0]?.id||null;
   if(data.theme){
     try{localStorage.setItem('jsb_theme',data.theme);applyThemeVars(JSON.parse(data.theme));}
@@ -1787,7 +1829,10 @@ async function requestWakeLock(){
   try{
     wakeLock=await navigator.wakeLock.request('screen');
     wakeLock.addEventListener('release',()=>{wakeLock=null;});
-  }catch(err){console.warn('WakeLock refusé:',err);}
+  }catch(err){
+    // NotAllowedError = refus normal (iframe, Permissions-Policy, contexte non-HTTPS) — silencieux
+    if(err.name!=='NotAllowedError')console.warn('WakeLock inattendu:',err);
+  }
 }
 async function releaseWakeLock(){
   if(wakeLock){try{await wakeLock.release();}catch{}wakeLock=null;}
