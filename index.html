@@ -818,10 +818,11 @@ function switchPresenterSong(id){
   // Gère les cas : isScore+scoreXml (nouveau), scoreXml seul, XML brut dans content, et MXL base64
   function _isXmlContent(s){
     return typeof s==='string'&&(
+      s.startsWith('[MusicXML]')|| // format builder
+      s.startsWith('[MXL_B64:')  || // format reader MXL compressé
       s.trimStart().startsWith('<?xml')||
       s.includes('<score-partwise')||
-      s.includes('<score-timewise')||
-      s.startsWith('[MXL_B64:') // .mxl compressé stocké en base64
+      s.includes('<score-timewise')
     );
   }
   const scoreXmlSrc = song.scoreXml || (_isXmlContent(song.content)?song.content:null);
@@ -889,7 +890,7 @@ async function renderScoreInline(song){
 
     const raw=song.scoreXml||'';
 
-    // Décode base64 → ArrayBuffer (MXL = ZIP compressé)
+    // Décode base64 → ArrayBuffer (pour les .mxl compressés)
     function _b64ToBuffer(b64){
       const bin=atob(b64);
       const bytes=new Uint8Array(bin.length);
@@ -897,24 +898,24 @@ async function renderScoreInline(song){
       return bytes.buffer;
     }
 
-    // Détection du format :
-    // 1. [MXL_B64:xxx] — format reader (wrapper explicite)
-    // 2. base64 brut sans balise XML — format builder (MXL exporté sans wrapper)
-    //    Les ZIP/MXL en base64 commencent par "UEsD" (magic PK)
-    // 3. Texte XML brut (commence par < ou <?xml)
-    const rawTrimmed=raw.trimStart();
+    // Normalise le contenu selon son format d'origine :
+    // • [MusicXML] <?xml...> — format builder (préfixe marqueur + XML brut)
+    // • [MXL_B64:xxx]        — format reader  (MXL compressé en base64 avec wrapper)
+    // • base64 brut           — MXL sans wrapper
+    // • <?xml...> / <score-  — XML brut direct
+    let _xmlSrc = raw;
+    if(raw.startsWith('[MusicXML]')){
+      // Builder : on strip le marqueur, le reste est du XML valide
+      _xmlSrc = raw.slice(10).trimStart();
+    }
+
     if(raw.startsWith('[MXL_B64:')){
-      // Format reader : [MXL_B64:xxxx]
       const b64=raw.slice(9,raw.lastIndexOf(']'));
       await _readerOsmd.load(_b64ToBuffer(b64));
 
-    } else if(!rawTrimmed.startsWith('<') && /^[A-Za-z0-9+/\r\n]+=*$/.test(raw.replace(/\s/g,''))){
-      // Format builder : base64 brut (pas de < donc pas du XML)
-      await _readerOsmd.load(_b64ToBuffer(raw.replace(/\s/g,'')));
-
-    } else {
-      // XML texte brut (.xml / .musicxml)
-      let xml=raw;
+    } else if(raw.startsWith('[MusicXML]') || _xmlSrc.trimStart().startsWith('<')){
+      // XML texte (avec ou sans préfixe builder)
+      let xml=_xmlSrc;
       xml=xml.replace(/<!DOCTYPE\b[^[>]*(?:\[[^\]]*\])?\s*>/i,'').trim();
       if(!xml.trimStart().startsWith('<'))xml='<?xml version="1.0" encoding="UTF-8"?>'+xml;
       const parser=new DOMParser();
@@ -922,6 +923,13 @@ async function renderScoreInline(song){
       const parseErr=xmlDoc.querySelector('parsererror');
       if(parseErr)throw new Error('XML invalide : '+parseErr.textContent.slice(0,120));
       await _readerOsmd.load(xmlDoc);
+
+    } else if(/^[A-Za-z0-9+/\r\n]+=*$/.test(raw.replace(/\s/g,''))){
+      // Base64 brut (MXL sans wrapper)
+      await _readerOsmd.load(_b64ToBuffer(raw.replace(/\s/g,'')));
+
+    } else {
+      throw new Error('Format de partition non reconnu (début : '+raw.slice(0,40)+')');
     }
 
     _readerOsmd.render();
@@ -1722,8 +1730,9 @@ document.getElementById('backup-input').addEventListener('change',async e=>{
     return (raw||[]).map(s=>{
       // Cas 1 : contenu XML ou MXL base64 stocké dans content (export converter ou ancien format)
       if(!s.scoreXml && s.content && typeof s.content==='string' &&
-         (s.content.trimStart().startsWith('<?xml')||s.content.includes('<score-partwise')||
-          s.content.includes('<score-timewise')||s.content.startsWith('[MXL_B64:'))){
+         (s.content.startsWith('[MusicXML]')||s.content.startsWith('[MXL_B64:')||
+          s.content.trimStart().startsWith('<?xml')||s.content.includes('<score-partwise')||
+          s.content.includes('<score-timewise'))){
         return{...s, scoreXml:s.content, content:'[SCORE_MUSICXML]', isScore:true};
       }
       // Cas 2 : scoreXml présent mais isScore absent
