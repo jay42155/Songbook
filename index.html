@@ -552,6 +552,11 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);height:
         <span class="row-icon">🎸</span>
         <div class="row-info"><div class="row-label">JAY's Songbook v2</div><div class="row-sub">PWA hors ligne · OpenChord · Images</div></div>
       </div>
+      <div class="settings-row" id="sett-update">
+        <span class="row-icon">🔄</span>
+        <div class="row-info"><div class="row-label">Vider le cache &amp; mettre à jour</div><div class="row-sub">Recharge la dernière version depuis le serveur</div></div>
+        <span class="row-arrow">›</span>
+      </div>
     </div>
 
   </div>
@@ -1759,6 +1764,42 @@ document.getElementById('backup-input').addEventListener('change',async e=>{
 document.getElementById('sett-help').addEventListener('click',()=>{
   window.open('aide.html','_blank');
 });
+// ── MISE À JOUR / VIDER LE CACHE ──
+document.getElementById('sett-update').addEventListener('click',()=>{
+  showModal(`<h3>🔄 Mettre à jour l'application</h3>
+    <p>Cette opération va :</p>
+    <ul style="font-size:14px;color:var(--text2);line-height:2;padding-left:20px;margin-bottom:16px">
+      <li>Vider le cache du Service Worker</li>
+      <li>Recharger la dernière version depuis le serveur</li>
+    </ul>
+    <p style="font-size:13px;color:var(--text3)">⚠️ Vos chansons et setlists ne sont pas affectées (stockées en localStorage).</p>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Annuler</button>
+      <button class="primary" onclick="doForceUpdate()">🔄 Mettre à jour</button>
+    </div>`);
+});
+
+window.doForceUpdate=async function(){
+  closeModal();
+  toast('⏳ Vidage du cache…');
+  try{
+    // 1. Supprime tous les caches SW
+    const keys=await caches.keys();
+    await Promise.all(keys.map(k=>caches.delete(k)));
+    // 2. Demande au SW de se mettre à jour
+    if('serviceWorker' in navigator){
+      const reg=await navigator.serviceWorker.getRegistration();
+      if(reg)await reg.update();
+    }
+    // 3. Recharge la page pour récupérer la nouvelle version
+    toast('✅ Cache vidé — rechargement…');
+    setTimeout(()=>window.location.reload(true),900);
+  }catch(err){
+    toast('❌ Erreur : '+err.message);
+    console.error(err);
+  }
+};
+
 
 // Web search sites
 function openWebSearch(baseUrl, prompt){
