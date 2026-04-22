@@ -889,21 +889,34 @@ async function renderScoreInline(song){
 
     const raw=song.scoreXml||'';
 
-    if(raw.startsWith('[MXL_B64:')){
-      // ── Fichier .mxl (MusicXML compressé ZIP) stocké en base64 ──
-      // OSMD sait décompresser le MXL nativement via un ArrayBuffer
-      const b64=raw.slice(9,raw.lastIndexOf(']'));
+    // Décode base64 → ArrayBuffer (MXL = ZIP compressé)
+    function _b64ToBuffer(b64){
       const bin=atob(b64);
       const bytes=new Uint8Array(bin.length);
       for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
-      await _readerOsmd.load(bytes.buffer);
+      return bytes.buffer;
+    }
+
+    // Détection du format :
+    // 1. [MXL_B64:xxx] — format reader (wrapper explicite)
+    // 2. base64 brut sans balise XML — format builder (MXL exporté sans wrapper)
+    //    Les ZIP/MXL en base64 commencent par "UEsD" (magic PK)
+    // 3. Texte XML brut (commence par < ou <?xml)
+    const rawTrimmed=raw.trimStart();
+    if(raw.startsWith('[MXL_B64:')){
+      // Format reader : [MXL_B64:xxxx]
+      const b64=raw.slice(9,raw.lastIndexOf(']'));
+      await _readerOsmd.load(_b64ToBuffer(b64));
+
+    } else if(!rawTrimmed.startsWith('<') && /^[A-Za-z0-9+/\r\n]+=*$/.test(raw.replace(/\s/g,''))){
+      // Format builder : base64 brut (pas de < donc pas du XML)
+      await _readerOsmd.load(_b64ToBuffer(raw.replace(/\s/g,'')));
+
     } else {
-      // ── Fichier .xml / .musicxml — texte XML brut ──
+      // XML texte brut (.xml / .musicxml)
       let xml=raw;
-      // Supprime le DOCTYPE même avec subset interne [...] contenant des >
       xml=xml.replace(/<!DOCTYPE\b[^[>]*(?:\[[^\]]*\])?\s*>/i,'').trim();
-      if(!xml.startsWith('<?xml'))xml='<?xml version="1.0" encoding="UTF-8"?>'+xml;
-      // Valide via DOMParser avant de passer à OSMD
+      if(!xml.trimStart().startsWith('<'))xml='<?xml version="1.0" encoding="UTF-8"?>'+xml;
       const parser=new DOMParser();
       const xmlDoc=parser.parseFromString(xml,'application/xml');
       const parseErr=xmlDoc.querySelector('parsererror');
