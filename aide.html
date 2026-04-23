@@ -458,14 +458,15 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
       <div class="warn">⚠️ Les fichiers audio (MP3, WAV…) sont volumineux et ne sont <strong>pas inclus</strong> dans la sauvegarde .json. Seul le nom du fichier est conservé. Organisez vos backing tracks dans le dossier <code>/Download/Btracks/</code> sur votre appareil.</div>
     </div></div>
     <div class="step"><div class="step-num">2</div><div class="step-body">
-      <div class="step-title">🎼 Visionneuse de partitions (score-viewer)</div>
-      <div class="step-desc">En ouvrant une partition MusicXML depuis la bibliothèque, <strong>score-viewer.html</strong> s'ouvre automatiquement.</div>
+      <div class="step-title">🎼 Partitions MusicXML — affichage intégré</div>
+      <div class="step-desc">En ouvrant une partition MusicXML (importée via <strong>＋ → Partition</strong> ou via le backup .json), elle s'affiche <strong>directement dans le lecteur</strong> — aucune page externe n'est ouverte.</div>
       <div class="infobox" style="margin-top:6px">
-        <div class="infobox-row"><span>🔍</span><div>Zoom +/− et ajustement à la largeur</div></div>
-        <div class="infobox-row"><span>📄</span><div>Navigation page par page ◀ ▶</div></div>
-        <div class="infobox-row"><span>🎯</span><div>Curseur de lecture note à note (touches ← →)</div></div>
-        <div class="infobox-row"><span>🌙</span><div>Mode sombre synchronisé avec l'app</div></div>
+        <div class="infobox-row"><span>📁</span><div>Formats acceptés : <strong>.xml</strong>, <strong>.musicxml</strong>, <strong>.mxl</strong> (compressé)</div></div>
+        <div class="infobox-row"><span>🎼</span><div>Rendu SVG haute qualité via OpenSheetMusicDisplay (OSMD)</div></div>
+        <div class="infobox-row"><span>📦</span><div>Les partitions sont incluses dans la sauvegarde .json et restaurées à l'import</div></div>
+        <div class="infobox-row"><span>🌐</span><div>Requiert une connexion internet au premier chargement (bibliothèque OSMD mise en cache ensuite)</div></div>
       </div>
+      <div class="tip">💡 Les partitions importées directement dans le Reader (bouton <strong>＋ → Partition</strong>) s'affichent immédiatement. Celles importées via le <strong>Converter PC</strong> et exportées dans le .json fonctionnent de la même façon après import de la sauvegarde.</div>
     </div></div>
   </div>
   <div class="mockup-wrap">
@@ -536,6 +537,7 @@ footer{background:var(--primary);color:var(--cream);text-align:center;padding:22
       <tr><td>🎨 Thème &amp; Couleurs</td><td>6 thèmes prédéfinis + personnalisation couleur par couleur.</td></tr>
       <tr><td>🔍 Sites de paroles</td><td>Genius · Ultimate Guitar · Musixmatch · La Boîte à Chansons.</td></tr>
       <tr><td>📖 Guide</td><td>Ouvre ce guide dans le navigateur.</td></tr>
+      <tr><td>🔄 Vider le cache &amp; mettre à jour</td><td>Supprime le cache du Service Worker et recharge la dernière version depuis le serveur. Utile si une mise à jour n'a pas été appliquée automatiquement. <strong>Les données (chansons, setlists) ne sont pas affectées.</strong></td></tr>
     </tbody>
   </table>
 </div>
